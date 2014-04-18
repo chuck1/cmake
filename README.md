@@ -1,0 +1,4 @@
+cmake
+=====
+
+my cmake macros
