@@ -9,10 +9,52 @@
 #MESSAGE("INSTALL_LIB_DIR       ${INSTALL_LIB_DIR}")
 
 
+string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
+
+set(CMAKE_INSTALL_PREFIX $ENV{HOME}/usr)
+
+
+set(INSTALL_LIB_DIR     ${CMAKE_INSTALL_PREFIX}/lib)
+set(INSTALL_BIN_DIR     ${CMAKE_INSTALL_PREFIX}/bin)
+set(INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
+set(INSTALL_CMAKE_DIR   ${CMAKE_INSTALL_PREFIX}/lib/cmake/${PROJECT_NAME})
+
+
+include_directories("${PROJECT_SOURCE_DIR}/src")
+
+
+# Make relative paths absolute (needed later on)
+foreach(p LIB BIN INCLUDE CMAKE)
+	set(var INSTALL_${p}_DIR)
+	if(NOT IS_ABSOLUTE "${${var}}")
+		set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
+	endif()
+endforeach()
+
+
+# Doxygen
+# =======
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+	set(CMAKE_DOXYFILE_FILE "$ENV{HOME}/Documents/Programming/C++/cmake/Doxyfile.in")
+	
+	configure_file(
+		${CMAKE_DOXYFILE_FILE}
+		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+
+	add_custom_target(doc
+		${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMENT "Generating API documentation with Doxygen" VERBATIM
+		)
+endif(DOXYGEN_FOUND)
+
+
+
 # Global Library Configuration Header
 configure_file(
-	"${PROJECT_SOURCE_DIR}/src/${LIB_NAME}/config.hpp.in"
-	"${PROJECT_SOURCE_DIR}/src/${LIB_NAME}/config.hpp")
+	"${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/config.hpp.in"
+	"${PROJECT_BINARY_DIR}/src/${PROJECT_NAME}/config.hpp")
 
 # Glob Source and Header Files
 # ============================
@@ -29,11 +71,11 @@ endforeach()
 #MESSAGE("${SOURCES}")
 
 
-
-file(GLOB_RECURSE FILES_HPP_ABS ${PROJECT_SOURCE_DIR}/src/*.hpp)
-file(GLOB_RECURSE FILES_GLSL_ABS ${PROJECT_SOURCE_DIR}/src/*.glsl)
-
-set(HEADERS_ABS ${FILES_HPP_ABS} ${FILES_GLSL_ABS})
+set(INCLUDE_EXTENSIONS ${INCLUDE_EXTENSIONS} hpp glsl)
+foreach(e ${INCLUDE_EXTENSIONS})
+	file(GLOB_RECURSE f ${PROJECT_SOURCE_DIR}/src/*.${e})
+	set(HEADERS_ABS ${HEADERS_ABS} ${f})
+endforeach()
 
 foreach(s ${HEADERS_ABS})
 	file(RELATIVE_PATH r ${PROJECT_SOURCE_DIR}/src ${s})
@@ -44,16 +86,16 @@ endforeach()
 #MESSAGE("${HEADERS}")
 
 
-add_library(${LIB_NAME} ${SOURCES})
+add_library(${PROJECT_NAME} ${SOURCES})
 
 # install library
 install(
-	TARGETS ${LIB_NAME}
+	TARGETS ${PROJECT_NAME}
 	DESTINATION "${INSTALL_LIB_DIR}"
-	EXPORT ${PROJECT_name}Targets
+	EXPORT ${PROJECT_NAME}Targets
 	RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin
 	LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT shlib
-	PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/${LIB_NAME}" COMPONENT dev
+	PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT dev
 )
 
 # install headers
@@ -64,52 +106,68 @@ foreach(h ${HEADERS})
 endforeach()
 
 
-# The interesting stuff goes here
-# ===============================
+# Packaging
+# =========
 
 # Add all targets to the build-tree export set
 
-#export(TARGETS ${LIB_NAME} FILE "${PROJECT_BINARY_DIR}/${PROJECT_name}Targets.cmake")
-export(TARGETS ${LIB_NAME} FILE "${INSTALL_BIN_DIR}/${PROJECT_name}Targets.cmake")
+#export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+export(TARGETS ${PROJECT_NAME} FILE "${INSTALL_BIN_DIR}/${PROJECT_NAME}Targets.cmake")
 
 # Export the package for use from the build-tree
 # (this registers the build-tree with a global CMake-registry)
-export(PACKAGE ${PROJECT_NAME})
+export(PACKAGE ${PROJECT_NAME_UPPER})
 
-# Create the FooBarConfig.cmake and FooBarConfigVersion files
+
+# projectConfig.cmake
+# ===================
 file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
+
+#set(CMAKE_CONFIG_FILE ${PROJECT_NAME}Config.cmake.in)
+set(CMAKE_CONFIG_FILE $ENV{HOME}/Documents/Programming/C++/cmake/static_libraryConfig.cmake.in)
 
 # ... for the build tree
 set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
 configure_file(
-	${PROJECT_name}Config.cmake.in
-	"${PROJECT_BINARY_DIR}/${PROJECT_name}Config.cmake"
+	${CMAKE_CONFIG_FILE}
+	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 	@ONLY)
 
 # ... for the install tree
-set(CONF_INCLUDE_DIRS "\${FOOBAR_CMAKE_DIR}/${REL_INCLUDE_DIR}")
+set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(
-	${PROJECT_name}Config.cmake.in
-	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_name}Config.cmake"
+	${CMAKE_CONFIG_FILE}
+	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
 	@ONLY)
 
-# ... for both
+
+# projectConfigVersion.cmake
+# ==========================
+
+#set(CMAKE_CONFIGVERSION_FILE ${PROJECT_NAME}ConfigVersion.cmake.in)
+set(CMAKE_CONFIGVERSION_FILE $ENV{HOME}/Documents/Programming/C++/cmake/static_libraryConfigVersion.cmake.in)
+
+# Create ConfigVersion.cmake file
 configure_file(
-	${PROJECT_name}ConfigVersion.cmake.in
-	"${PROJECT_BINARY_DIR}/${PROJECT_name}ConfigVersion.cmake"
+	${CMAKE_CONFIGVERSION_FILE}
+	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
 	@ONLY)
 
-# Install the FooBarConfig.cmake and FooBarConfigVersion.cmake
+
+# Install
+# =======
+
+# Install the foobarConfig.cmake and foobarConfigVersion.cmake
 install(FILES
-	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_name}Config.cmake"
-	"${PROJECT_BINARY_DIR}/${PROJECT_name}ConfigVersion.cmake"
+	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
+	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
 	DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
 
 # Install the export set for use with the install-tree
 #MESSAGE("${INSTALL_CMAKE_DIR}")
 
 install(
-	EXPORT ${PROJECT_name}Targets
+	EXPORT ${PROJECT_NAME}Targets
 	DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
 
 
