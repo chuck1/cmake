@@ -8,11 +8,11 @@
 #MESSAGE("INSTALL_BIN_DIR       ${INSTALL_BIN_DIR}")
 #MESSAGE("INSTALL_LIB_DIR       ${INSTALL_LIB_DIR}")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread")
 
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
 
 set(CMAKE_INSTALL_PREFIX $ENV{HOME}/usr)
-
 
 set(INSTALL_LIB_DIR     ${CMAKE_INSTALL_PREFIX}/lib)
 set(INSTALL_BIN_DIR     ${CMAKE_INSTALL_PREFIX}/bin)
@@ -20,7 +20,7 @@ set(INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
 set(INSTALL_CMAKE_DIR   ${CMAKE_INSTALL_PREFIX}/lib/cmake/${PROJECT_NAME})
 
 
-include_directories("${PROJECT_SOURCE_DIR}/src")
+include_directories("${PROJECT_SOURCE_DIR}/src" "${PROJECT_BINARY_DIR}/src")
 
 
 # Make relative paths absolute (needed later on)
@@ -36,7 +36,7 @@ endforeach()
 # =======
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
-	set(CMAKE_DOXYFILE_FILE "$ENV{HOME}/Documents/Programming/C++/cmake/Doxyfile.in")
+	set(CMAKE_DOXYFILE_FILE "$ENV{HOME}/Programming/C++/cmake/Doxyfile.in")
 	
 	configure_file(
 		${CMAKE_DOXYFILE_FILE}
@@ -56,10 +56,12 @@ configure_file(
 	"${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/config.hpp.in"
 	"${PROJECT_BINARY_DIR}/src/${PROJECT_NAME}/config.hpp")
 
+install(
+	FILES ${PROJECT_BINARY_DIR}/src/${PROJECT_NAME}/config.hpp
+	DESTINATION include/${PROJECT_NAME})
+
 # Glob Source and Header Files
 # ============================
-
-
 
 file(GLOB_RECURSE SOURCES_ABS ${PROJECT_SOURCE_DIR}/src/*.cpp)
 foreach(s ${SOURCES_ABS})
@@ -124,7 +126,7 @@ export(PACKAGE ${PROJECT_NAME_UPPER})
 file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
 
 #set(CMAKE_CONFIG_FILE ${PROJECT_NAME}Config.cmake.in)
-set(CMAKE_CONFIG_FILE $ENV{HOME}/Documents/Programming/C++/cmake/static_libraryConfig.cmake.in)
+set(CMAKE_CONFIG_FILE $ENV{HOME}/Programming/C++/cmake/static_libraryConfig.cmake.in)
 
 # ... for the build tree
 set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
@@ -145,7 +147,7 @@ configure_file(
 # ==========================
 
 #set(CMAKE_CONFIGVERSION_FILE ${PROJECT_NAME}ConfigVersion.cmake.in)
-set(CMAKE_CONFIGVERSION_FILE $ENV{HOME}/Documents/Programming/C++/cmake/static_libraryConfigVersion.cmake.in)
+set(CMAKE_CONFIGVERSION_FILE $ENV{HOME}/Programming/C++/cmake/static_libraryConfigVersion.cmake.in)
 
 # Create ConfigVersion.cmake file
 configure_file(
