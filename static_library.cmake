@@ -36,17 +36,22 @@ endforeach()
 # =======
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
-	set(CMAKE_DOXYFILE_FILE "$ENV{HOME}/Programming/C++/cmake/Doxyfile.in")
+	set(CMAKE_DOXYFILE_FILE "$ENV{HOME}/Documents/Programming/C++/cmake/Doxyfile.in")
 	
 	configure_file(
 		${CMAKE_DOXYFILE_FILE}
 		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+	
+	set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR})
+	set(WORKDIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 	add_custom_target(doc
 		${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		WORKING_DIRECTORY ${WORKDIR}
 		COMMENT "Generating API documentation with Doxygen" VERBATIM
 		)
+
+
 endif(DOXYGEN_FOUND)
 
 
@@ -126,7 +131,7 @@ export(PACKAGE ${PROJECT_NAME_UPPER})
 file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
 
 #set(CMAKE_CONFIG_FILE ${PROJECT_NAME}Config.cmake.in)
-set(CMAKE_CONFIG_FILE $ENV{HOME}/Programming/C++/cmake/static_libraryConfig.cmake.in)
+set(CMAKE_CONFIG_FILE $ENV{HOME}/Documents/Programming/C++/cmake/static_libraryConfig.cmake.in)
 
 # ... for the build tree
 set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
@@ -147,7 +152,7 @@ configure_file(
 # ==========================
 
 #set(CMAKE_CONFIGVERSION_FILE ${PROJECT_NAME}ConfigVersion.cmake.in)
-set(CMAKE_CONFIGVERSION_FILE $ENV{HOME}/Programming/C++/cmake/static_libraryConfigVersion.cmake.in)
+set(CMAKE_CONFIGVERSION_FILE $ENV{HOME}/Documents/Programming/C++/cmake/static_libraryConfigVersion.cmake.in)
 
 # Create ConfigVersion.cmake file
 configure_file(
