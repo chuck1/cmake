@@ -8,6 +8,8 @@
 #MESSAGE("INSTALL_BIN_DIR       ${INSTALL_BIN_DIR}")
 #MESSAGE("INSTALL_LIB_DIR       ${INSTALL_LIB_DIR}")
 
+set(CMAKE_HELPER_INSTALL_DIR $ENV{HOME}/usr/lib/cmake/CMakeHelper)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread")
 
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
@@ -36,7 +38,7 @@ endforeach()
 # =======
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
-	set(CMAKE_DOXYFILE_FILE "$ENV{HOME}/Documents/Programming/C++/cmake/Doxyfile.in")
+	set(CMAKE_DOXYFILE_FILE "${CMAKE_HELPER_INSTALL_DIR}/Doxyfile.in")
 	
 	configure_file(
 		${CMAKE_DOXYFILE_FILE}
@@ -131,7 +133,7 @@ export(PACKAGE ${PROJECT_NAME_UPPER})
 file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
 
 #set(CMAKE_CONFIG_FILE ${PROJECT_NAME}Config.cmake.in)
-set(CMAKE_CONFIG_FILE $ENV{HOME}/Documents/Programming/C++/cmake/static_libraryConfig.cmake.in)
+set(CMAKE_CONFIG_FILE ${CMAKE_HELPER_INSTALL_DIR}/static_libraryConfig.cmake.in)
 
 # ... for the build tree
 set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
@@ -152,7 +154,7 @@ configure_file(
 # ==========================
 
 #set(CMAKE_CONFIGVERSION_FILE ${PROJECT_NAME}ConfigVersion.cmake.in)
-set(CMAKE_CONFIGVERSION_FILE $ENV{HOME}/Documents/Programming/C++/cmake/static_libraryConfigVersion.cmake.in)
+set(CMAKE_CONFIGVERSION_FILE ${CMAKE_HELPER_INSTALL_DIR}/static_libraryConfigVersion.cmake.in)
 
 # Create ConfigVersion.cmake file
 configure_file(
