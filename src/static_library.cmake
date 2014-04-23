@@ -38,6 +38,14 @@ endforeach()
 # =======
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
+
+	find_package(Graphviz)
+	if(Graphviz_FOUND)
+		set(HAVE_DOT YES)
+	else()
+		set(HAVE_DOT NO)
+	endif()
+
 	set(CMAKE_DOXYFILE_FILE "${CMAKE_HELPER_INSTALL_DIR}/Doxyfile.in")
 	
 	configure_file(
