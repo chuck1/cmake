@@ -34,36 +34,7 @@ foreach(p LIB BIN INCLUDE CMAKE)
 endforeach()
 
 
-# Doxygen
-# =======
-find_package(Doxygen)
-if(DOXYGEN_FOUND)
-
-	find_package(Graphviz)
-	if(Graphviz_FOUND)
-		set(HAVE_DOT YES)
-	else()
-		set(HAVE_DOT NO)
-	endif()
-
-	set(CMAKE_DOXYFILE_FILE "${CMAKE_HELPER_INSTALL_DIR}/Doxyfile.in")
-	
-	configure_file(
-		${CMAKE_DOXYFILE_FILE}
-		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-	
-	set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR})
-	set(WORKDIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-	add_custom_target(doc
-		${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-		WORKING_DIRECTORY ${WORKDIR}
-		COMMENT "Generating API documentation with Doxygen" VERBATIM
-		)
-
-
-endif(DOXYGEN_FOUND)
-
+include(${CMAKE_HELPER_INSTALL_DIR}/doc/doc.cmake)
 
 
 # Global Library Configuration Header
@@ -103,7 +74,7 @@ endforeach()
 #MESSAGE("${HEADERS}")
 
 
-add_library(${PROJECT_NAME} ${SOURCES})
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
 # install library
 install(
@@ -123,68 +94,16 @@ foreach(h ${HEADERS})
 endforeach()
 
 
-# Packaging
-# =========
-
-# Add all targets to the build-tree export set
-
-#export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
-export(TARGETS ${PROJECT_NAME} FILE "${INSTALL_BIN_DIR}/${PROJECT_NAME}Targets.cmake")
-
-# Export the package for use from the build-tree
-# (this registers the build-tree with a global CMake-registry)
-export(PACKAGE ${PROJECT_NAME_UPPER})
 
 
-# projectConfig.cmake
-# ===================
-file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
-
-#set(CMAKE_CONFIG_FILE ${PROJECT_NAME}Config.cmake.in)
-set(CMAKE_CONFIG_FILE ${CMAKE_HELPER_INSTALL_DIR}/static_libraryConfig.cmake.in)
-
-# ... for the build tree
-set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
-configure_file(
-	${CMAKE_CONFIG_FILE}
-	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-	@ONLY)
-
-# ... for the install tree
-set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_CMAKE_DIR}/${REL_INCLUDE_DIR}")
-configure_file(
-	${CMAKE_CONFIG_FILE}
-	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
-	@ONLY)
+# Config
+# uses:
+#	INSTALL_CMAKE_DIR
+#	INSTALL_INCLUDE_DIR
+include(package.cmake)
 
 
-# projectConfigVersion.cmake
-# ==========================
-
-#set(CMAKE_CONFIGVERSION_FILE ${PROJECT_NAME}ConfigVersion.cmake.in)
-set(CMAKE_CONFIGVERSION_FILE ${CMAKE_HELPER_INSTALL_DIR}/static_libraryConfigVersion.cmake.in)
-
-# Create ConfigVersion.cmake file
-configure_file(
-	${CMAKE_CONFIGVERSION_FILE}
-	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-	@ONLY)
 
 
-# Install
-# =======
-
-# Install the foobarConfig.cmake and foobarConfigVersion.cmake
-install(FILES
-	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
-	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-	DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
-
-# Install the export set for use with the install-tree
-#MESSAGE("${INSTALL_CMAKE_DIR}")
-
-install(
-	EXPORT ${PROJECT_NAME}Targets
-	DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
 
 
