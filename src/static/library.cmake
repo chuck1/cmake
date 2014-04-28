@@ -100,7 +100,7 @@ endforeach()
 # uses:
 #	INSTALL_CMAKE_DIR
 #	INSTALL_INCLUDE_DIR
-include(package.cmake)
+include(${CMAKE_HELPER_INSTALL_DIR}/package.cmake)
 
 
 

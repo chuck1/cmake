@@ -16,7 +16,7 @@ export(PACKAGE ${PROJECT_NAME_UPPER})
 file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
 
 #set(CMAKE_CONFIG_FILE ${PROJECT_NAME}Config.cmake.in)
-set(CMAKE_CONFIG_FILE ${CMAKE_HELPER_INSTALL_DIR}/static_libraryConfig.cmake.in)
+set(CMAKE_CONFIG_FILE ${CMAKE_HELPER_INSTALL_DIR}/static/libraryConfig.cmake.in)
 
 
 # difference between build tree and install tree below is the include directory paths
@@ -42,7 +42,7 @@ configure_file(
 # ==========================
 
 #set(CMAKE_CONFIGVERSION_FILE ${PROJECT_NAME}ConfigVersion.cmake.in)
-set(CMAKE_CONFIGVERSION_FILE ${CMAKE_HELPER_INSTALL_DIR}/static_libraryConfigVersion.cmake.in)
+set(CMAKE_CONFIGVERSION_FILE ${CMAKE_HELPER_INSTALL_DIR}/static/libraryConfigVersion.cmake.in)
 
 # Create ConfigVersion.cmake file
 configure_file(
