@@ -11,7 +11,7 @@ if(DOXYGEN_FOUND)
 		set(HAVE_DOT NO)
 	endif()
 
-	set(CMAKE_DOXYFILE_FILE "${CMAKE_HELPER_INSTALL_DIR}/Doxyfile.in")
+	set(CMAKE_DOXYFILE_FILE "${CMAKE_HELPER_INSTALL_DIR}/doc/Doxyfile.in")
 	
 	configure_file(
 		${CMAKE_DOXYFILE_FILE}
