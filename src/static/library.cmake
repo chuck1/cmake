@@ -10,7 +10,7 @@
 
 set(CMAKE_HELPER_INSTALL_DIR $ENV{HOME}/usr/lib/cmake/CMakeHelper)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5 -rdynamic -pthread")
 
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
 
@@ -39,8 +39,8 @@ include(${CMAKE_HELPER_INSTALL_DIR}/doc/doc.cmake)
 
 # Global Library Configuration Header
 configure_file(
-	"${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/config.hpp.in"
-	"${PROJECT_BINARY_DIR}/src/${PROJECT_NAME}/config.hpp")
+	"${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/config.hh.in"
+	"${PROJECT_BINARY_DIR}/src/${PROJECT_NAME}/config.hh")
 
 install(
 	FILES ${PROJECT_BINARY_DIR}/src/${PROJECT_NAME}/config.hpp
@@ -49,7 +49,9 @@ install(
 # Glob Source and Header Files
 # ============================
 
-file(GLOB_RECURSE SOURCES_ABS ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE SOURCES_ABS_CPP ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE SOURCES_ABS_CC ${PROJECT_SOURCE_DIR}/src/*.cc)
+set(SOURCES_ABS ${SOURCES_ABS_CC} ${SOURCES_ABS_CPP})
 foreach(s ${SOURCES_ABS})
 	file(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${s})
 	set(SOURCES ${SOURCES} ${r})
