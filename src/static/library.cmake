@@ -10,7 +10,7 @@
 
 set(CMAKE_HELPER_INSTALL_DIR $ENV{HOME}/usr/lib/cmake/CMakeHelper)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5 -rdynamic -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5")
 
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
 
@@ -52,6 +52,7 @@ install(
 file(GLOB_RECURSE SOURCES_ABS_CPP ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE SOURCES_ABS_CC ${PROJECT_SOURCE_DIR}/src/*.cc)
 set(SOURCES_ABS ${SOURCES_ABS_CC} ${SOURCES_ABS_CPP})
+
 foreach(s ${SOURCES_ABS})
 	file(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${s})
 	set(SOURCES ${SOURCES} ${r})
@@ -75,8 +76,12 @@ foreach(s ${HEADERS_ABS})
 endforeach()
 #MESSAGE("${HEADERS}")
 
+set(CMAKE_CPP_CREATE_STATIC_LIBRARY on)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
+
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CPP)
+
 
 # install library
 install(

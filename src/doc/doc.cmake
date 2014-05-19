@@ -12,9 +12,7 @@ if(DOXYGEN_FOUND)
 	endif()
 
 	set(CMAKE_DOXYFILE_FILE "${CMAKE_HELPER_INSTALL_DIR}/doc/Doxyfile.in")
-
-	#message("${CMAKE_DOXYFILE_FILE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
-
+	
 	configure_file(
 		${CMAKE_DOXYFILE_FILE}
 		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
