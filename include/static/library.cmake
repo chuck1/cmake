@@ -8,7 +8,10 @@
 #MESSAGE("INSTALL_BIN_DIR       ${INSTALL_BIN_DIR}")
 #MESSAGE("INSTALL_LIB_DIR       ${INSTALL_LIB_DIR}")
 
+
 set(CMAKE_HELPER_INSTALL_DIR $ENV{HOME}/usr/lib/cmake/CMakeHelper)
+
+INCLUDE(${CMAKE_HELPER_INSTALL_DIR}/functions.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5")
 
@@ -37,10 +40,7 @@ endforeach()
 include(${CMAKE_HELPER_INSTALL_DIR}/doc/doc.cmake)
 
 
-# Global Library Configuration Header
-configure_file(
-	"${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/config.hh.in"
-	"${PROJECT_BINARY_DIR}/src/${PROJECT_NAME}/config.hh")
+configure_glob()
 
 install(
 	FILES ${PROJECT_BINARY_DIR}/src/${PROJECT_NAME}/config.hpp
@@ -99,6 +99,8 @@ foreach(h ${HEADERS})
 	#MESSAGE("${h} ${f}")
 	install(FILES ${PROJECT_SOURCE_DIR}/src/${h} DESTINATION include/${f})
 endforeach()
+
+
 
 
 

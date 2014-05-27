@@ -1,0 +1,56 @@
+digraph files {
+	rankdir = LR
+	subgraph cluster_cmakehelper {
+		style = solid
+		label = "CMakeHelper"
+		
+		subgraph cluster_inc {
+			label = "include"
+			
+			subgraph cluster_inc_cmh {
+				label = "CMakeHelper"
+				Doxyfile_in_in [label="Doxyfile.in.in"]
+			}		
+		}
+		subgraph cluster_build {
+			label = "build"
+			subgraph cluster_build_inc {
+				label = "include"
+				
+				subgraph cluster_build_inc_cmh {
+					label = "CMakeHelper"
+					Doxyfile_in [label="Doxyfile.in"]
+				}
+			}
+		}
+	}
+	subgraph cluster_cmakehelper_install_prefix {
+		style = solid
+		label = "CMakeHelper Install Prefix"
+		
+		subgraph cluster_cmh_install_include {
+			label = "include"
+			
+			subgraph cluster_cmh_install_inc_cmh {
+				label = "CMakeHelper"
+				cmh_install_inc_cmh_Doxyfile_in [label="Doxyfile.in"]
+			}		
+		}
+	}
+
+	subgraph cluster_proj {
+		style = solid
+		label = "Project"
+		
+		subgraph cluster_build {
+			label = "build"
+
+			proj_build_Doxyfile [label="Doxyfile"]
+		}
+	}
+	
+	Doxyfile_in -> cmh_install_inc_cmh_Doxyfile_in -> proj_build_Doxyfile
+	Doxyfile_in_in -> Doxyfile_in [label="CONFIGURE"]
+}
+
+
