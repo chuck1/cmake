@@ -4,14 +4,12 @@ PROJECT(CMakeHelper)
 SET(PACKAGE_VERSION 0.0.1)
 
 # workaround for circular dependency of this project on itself...
-SET(CMAKE_INSTALL_PREFIX /scratch/usr)
+SET(CMAKE_INSTALL_PREFIX $ENV{HOME}/usr)
 SET(CMakeHelper_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
 include(${PROJECT_SOURCE_DIR}/include/CMakeHelper/functions.cmake)
 
 include(${PROJECT_SOURCE_DIR}/include/CMakeHelper/package_basic/package.cmake)
-
-set(CMAKE_INSTALL_PREFIX /scratch/usr)
 
 dot_glob(pdf)
 
