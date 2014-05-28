@@ -1,22 +1,19 @@
-# Packaging
-# =========
+# Basic Packaging
+# ===============
 
 # Add all targets to the build-tree export set
 
-#export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
-export(TARGETS ${PROJECT_NAME} FILE "${INSTALL_BIN_DIR}/${PROJECT_NAME}Targets.cmake")
-
 # Export the package for use from the build-tree
 # (this registers the build-tree with a global CMake-registry)
-export(PACKAGE ${PROJECT_NAME_UPPER})
+export(PACKAGE ${PROJECT_NAME})
 
 
-# projectConfig.cmake
+# ProjectConfig.cmake
 # ===================
-file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
+#file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}" "${INSTALL_INCLUDE_DIR}")
 
 #set(CMAKE_CONFIG_FILE ${PROJECT_NAME}Config.cmake.in)
-set(CMAKE_CONFIG_FILE ${CMAKE_HELPER_INSTALL_DIR}/static/libraryConfig.cmake.in)
+set(CONFIG_FILE ${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package_basic/Config.cmake.in)
 
 
 # difference between build tree and install tree below is the include directory paths
@@ -24,16 +21,18 @@ set(CMAKE_CONFIG_FILE ${CMAKE_HELPER_INSTALL_DIR}/static/libraryConfig.cmake.in)
 # tree is needed; perhaps it is for sub_directories that call find_package when this package isnt yet installed... (a diagram might be nice...)
 
 # ... for the build tree
-set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
+set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
 configure_file(
-	${CMAKE_CONFIG_FILE}
+	${CONFIG_FILE}
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 	@ONLY)
 
 # ... for the install tree
-set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_CMAKE_DIR}/${REL_INCLUDE_DIR}")
+set(CONF_INCLUDE_DIR "\${${PROJECT_NAME}_INSTALL_PREFIX}/include")
+set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME}_INSTALL_PREFIX}/include")
 configure_file(
-	${CMAKE_CONFIG_FILE}
+	${CONFIG_FILE}
 	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
 	@ONLY)
 
@@ -42,7 +41,7 @@ configure_file(
 # ==========================
 
 #set(CMAKE_CONFIGVERSION_FILE ${PROJECT_NAME}ConfigVersion.cmake.in)
-set(CMAKE_CONFIGVERSION_FILE ${CMAKE_HELPER_INSTALL_DIR}/static/libraryConfigVersion.cmake.in)
+set(CMAKE_CONFIGVERSION_FILE ${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package_basic/ConfigVersion.cmake.in)
 
 # Create ConfigVersion.cmake file
 configure_file(
@@ -58,14 +57,13 @@ configure_file(
 install(FILES
 	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-	DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+	DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/${PROJECT_NAME}" COMPONENT dev)
 
 
 # Install the export set for use with the install-tree
 #MESSAGE("${INSTALL_CMAKE_DIR}")
 
-install(
-	EXPORT ${PROJECT_NAME}Targets
-	DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+
+
 
 

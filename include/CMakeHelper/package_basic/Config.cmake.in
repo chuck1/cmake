@@ -1,0 +1,21 @@
+# - Config file for the FooBar package
+# It defines the following variables
+#  FOOBAR_INCLUDE_DIRS - include directories for FooBar
+#  FOOBAR_LIBRARIES    - libraries to link against
+#  FOOBAR_EXECUTABLE   - the bar executable
+
+# Compute paths
+#get_filename_component(@PROJECT_NAME_UPPER@_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+#get_filename_component(@PROJECT_NAME_UPPER@_CMAKE_DIR "@INSTALL_CMAKE_DIR@" PATH)
+
+set(@PROJECT_NAME@_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@")
+
+# location of this file...
+set(@PROJECT_NAME@_CMAKE_DIR "@CMAKE_INSTALL_PREFIX@/lib/cmake")
+
+set(@PROJECT_NAME@_INCLUDE_DIR "@CONF_INCLUDE_DIR@")
+set(@PROJECT_NAME@_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+
+
+
+

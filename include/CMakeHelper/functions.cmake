@@ -1,6 +1,10 @@
 
+# gather all files matching
+#     ${PROJECT_SOURCE_DIR}/${folder}/*${extension}
+# and install them in
+#     ${CMAKE_INSTALL_PREFIX}/${folder}
 
-FUNCTION(install_glob extension folder)
+FUNCTION(install_glob_source folder extension)
 	FILE(GLOB_RECURSE files_abs ${PROJECT_SOURCE_DIR}/${folder}/*.${extension})
 	FOREACH(f ${files_abs})
 		FILE(RELATIVE_PATH r ${PROJECT_SOURCE_DIR}/${folder} ${f})
@@ -10,16 +14,33 @@ FUNCTION(install_glob extension folder)
 ENDFUNCTION()
 
 
-FUNCTION(configure_glob)
-	FILE(GLOB_RECURSE files_abs ${PROJECT_SOURCE_DIR}/*.in)
+# gather all files matching
+#     ${PROJECT_BINARY_DIR}/${folder}/*${extension}
+# and install them in
+#     ${CMAKE_INSTALL_PREFIX}/${folder}
+
+FUNCTION(install_glob_binary folder extension)
+	FILE(GLOB_RECURSE files_abs ${PROJECT_BINARY_DIR}/${folder}/*.${extension})
+	FOREACH(f ${files_abs})
+		FILE(RELATIVE_PATH r ${PROJECT_BINARY_DIR}/${folder} ${f})
+		GET_FILENAME_COMPONENT(d ${r} PATH)
+		INSTALL(FILES ${PROJECT_BINARY_DIR}/${folder}/${r} DESTINATION ${d})
+	ENDFOREACH()
+ENDFUNCTION()
+
+
+
+FUNCTION(configure_glob extension)
+	FILE(GLOB_RECURSE files_abs ${PROJECT_SOURCE_DIR}/*.${extension})
 	FOREACH(f ${files_abs})
 		FILE(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${f})
 		
-		STRING(REGEX REPLACE "\\.in$" "" r ${r})
+		STRING(REGEX REPLACE "\\.${extension}$" "" r ${r})
 		
 		CONFIGURE_FILE(
-			"${PROJECT_SOURCE_DIR}/${r}.in"
-			"${PROJECT_BINARY_DIR}/${r}")
+			"${PROJECT_SOURCE_DIR}/${r}.${extension}"
+			"${PROJECT_BINARY_DIR}/${r}"
+			@ONLY)
 	ENDFOREACH()
 ENDFUNCTION()
 
