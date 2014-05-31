@@ -4,6 +4,25 @@
 # and install them in
 #     ${CMAKE_INSTALL_PREFIX}/${folder}
 
+FUNCTION(cmh_file_glob_source varname)
+
+	SET(${varname} PARENT_SCOPE)
+	
+	SET(exts "c" "cc" "cpp" "cxx")
+	FOREACH(e ${exts})
+		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_SOURCE_DIR}/*.${e})
+		SET(files ${files} ${files_abs_tmp})
+		MESSAGE(STATUS "found in ${PROJECT_SOURCE_DIR}: ${files_abs_tmp}")
+		
+		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_BINARY_DIR}/*.${e})
+		SET(files ${files} ${files_abs_tmp})
+		MESSAGE(STATUS "found in ${PROJECT_BINARY_DIR}: ${files_abs_tmp}")
+	ENDFOREACH()
+	
+	SET(${varname} ${files} PARENT_SCOPE)
+	MESSAGE(STATUS "returning: ${files}")
+ENDFUNCTION()
+
 FUNCTION(install_glob_source folder extension)
 	FILE(GLOB_RECURSE files_abs ${PROJECT_SOURCE_DIR}/${folder}/*.${extension})
 	FOREACH(f ${files_abs})
@@ -34,9 +53,9 @@ FUNCTION(configure_glob extension)
 	FILE(GLOB_RECURSE files_abs ${PROJECT_SOURCE_DIR}/*.${extension})
 	FOREACH(f ${files_abs})
 		FILE(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${f})
-		
+
 		STRING(REGEX REPLACE "\\.${extension}$" "" r ${r})
-		
+
 		CONFIGURE_FILE(
 			"${PROJECT_SOURCE_DIR}/${r}.${extension}"
 			"${PROJECT_BINARY_DIR}/${r}"
@@ -46,14 +65,14 @@ ENDFUNCTION()
 
 
 FUNCTION(dot_glob output_format)
-	
+
 	SET(dot_command "dot")
-	
+
 	FILE(GLOB_RECURSE files_abs ${PROJECT_SOURCE_DIR}/*.dot)
 	FOREACH(f ${files_abs})
 		FILE(RELATIVE_PATH rs ${PROJECT_SOURCE_DIR} ${f})
 		FILE(RELATIVE_PATH rb ${PROJECT_BINARY_DIR} ${f})
-		
+
 		GET_FILENAME_COMPONENT(we ${f} NAME_WE)
 		GET_FILENAME_COMPONENT(ps ${rs} PATH)
 		GET_FILENAME_COMPONENT(pb ${rb} PATH)
@@ -61,7 +80,7 @@ FUNCTION(dot_glob output_format)
 		SET(inputs ${ps}/${we}.dot)
 		SET(inputb ${pb}/${we}.dot)
 		SET(output ${ps}/${we}.${output_format})
-		
+
 		ADD_CUSTOM_COMMAND(
 			OUTPUT ${output}
 			COMMAND ${dot_command} -T${output_format} -o${output} ${inputb}
@@ -71,9 +90,23 @@ FUNCTION(dot_glob output_format)
 
 		SET(dot_output_files ${dot_output_files} ${output})
 	ENDFOREACH()
-	
+
 	ADD_CUSTOM_TARGET(dot DEPENDS ${dot_output_files})
-	
+
 ENDFUNCTION()
+
+
+FUNCTION(link_exe)
+	MESSAGE(STATUS "link ${PROJECT_NAME} to ${libs}")
+
+	SET(source_files)
+	cmh_file_glob_source(source_files)
+
+	MESSAGE("source files: ${source_files}")
+
+	ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
+	TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${libs})
+ENDFUNCTION()
+
 
 
