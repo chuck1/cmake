@@ -12,15 +12,15 @@ FUNCTION(cmh_file_glob_source varname)
 	FOREACH(e ${exts})
 		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_SOURCE_DIR}/*.${e})
 		SET(files ${files} ${files_abs_tmp})
-		MESSAGE(STATUS "found in ${PROJECT_SOURCE_DIR}: ${files_abs_tmp}")
+		#MESSAGE(STATUS "found in ${PROJECT_SOURCE_DIR}: ${files_abs_tmp}")
 		
 		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_BINARY_DIR}/*.${e})
 		SET(files ${files} ${files_abs_tmp})
-		MESSAGE(STATUS "found in ${PROJECT_BINARY_DIR}: ${files_abs_tmp}")
+		#MESSAGE(STATUS "found in ${PROJECT_BINARY_DIR}: ${files_abs_tmp}")
 	ENDFOREACH()
 	
 	SET(${varname} ${files} PARENT_SCOPE)
-	MESSAGE(STATUS "returning: ${files}")
+	#MESSAGE(STATUS "returning: ${files}")
 ENDFUNCTION()
 
 FUNCTION(install_glob_source folder extension)

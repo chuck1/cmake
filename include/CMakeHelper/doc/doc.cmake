@@ -1,7 +1,7 @@
-# Doxygen
-# =======
 
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/color.cmake)
+
+FUNCTION(cmh_doc)
 
 find_package(Doxygen REQUIRED)
 
@@ -19,10 +19,10 @@ if(DOXYGEN_FOUND)
 		"${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/Doxyfile.in"
 		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
 		@ONLY)
-	
+
 	#set(WORKDIR ${CMAKE_CURRENT_BINARY_DIR})
 	set(WORKDIR ${PROJECT_SOURCE_DIR}/doc/${PROJECT_NAME}/doxygen)
-		
+
 	FILE(MAKE_DIRECTORY ${WORKDIR})
 
 	#MESSAGE("list dir: ${CMAKE_CURRENT_LIST_DIR}")
@@ -30,6 +30,8 @@ if(DOXYGEN_FOUND)
 	#MESSAGE("work dir: ${WORKDIR}")
 	#MESSAGE("dox file: ${PROJECT_BINARY_DIR}/Doxyfile")
 
+	# inform object projects that include this project via FIND_PACKAGE of the location of the .tag file
+	SET(DOX_TAGFILE ${WORKDIR}/${PROJECT_NAME}.tag PARENT_SCOPE)
 
 	add_custom_target(doc
 		${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
@@ -39,4 +41,7 @@ if(DOXYGEN_FOUND)
 else()
 	MESSAGE(WARNING "${BoldYellow}Doxygen not found${ColourReset}")
 endif()
+
+ENDFUNCTION()
+
 

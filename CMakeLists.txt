@@ -9,7 +9,7 @@ SET(CMakeHelper_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 
 include(${PROJECT_SOURCE_DIR}/include/CMakeHelper/functions.cmake)
 
-include(${PROJECT_SOURCE_DIR}/include/CMakeHelper/package_basic/package.cmake)
+include(${PROJECT_SOURCE_DIR}/include/CMakeHelper/package_cmh/package.cmake)
 
 dot_glob(pdf)
 

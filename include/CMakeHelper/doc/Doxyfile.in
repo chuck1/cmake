@@ -666,20 +666,8 @@ INPUT_ENCODING         = UTF-8
 # *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py
 # *.f90 *.f *.for *.vhd *.vhdl
 
-FILE_PATTERNS          = *.cpp *.hpp *.hh *.cc *.dox
-
-# The RECURSIVE tag can be used to turn specify whether or not subdirectories
-# should be searched for input files as well. Possible values are YES and NO.
-# If left blank NO is used.
-
+FILE_PATTERNS          = *.cpp *.cc *.c *.hpp *.hh *.h *.dox
 RECURSIVE              = YES
-
-# The EXCLUDE tag can be used to specify files and/or directories that should be
-# excluded from the INPUT source files. This way you can easily exclude a
-# subdirectory from a directory tree whose root is specified with the INPUT tag.
-# Note that relative paths are relative to the directory from which doxygen is
-# run.
-
 EXCLUDE                =
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
@@ -1541,12 +1529,8 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
-
-# When a file name is specified after GENERATE_TAGFILE, doxygen will create
-# a tag file that is based on the input files it reads.
-
-GENERATE_TAGFILE       =
+TAGFILES               = @DOX_TAGFILES@
+GENERATE_TAGFILE       = @PROJECT_NAME@.tag
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed
 # in the class index. If set to NO only the inherited external classes

@@ -2,6 +2,7 @@
 
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/doc.cmake)
+include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/header_only/package.cmake)
 
 #MESSAGE("CMAKE_BINARY_DIR      ${CMAKE_BINARY_DIR}")
 #MESSAGE("CMAKE_FILES_DIRECTORY ${CMAKE_FILES_DIRECTORY}")
@@ -19,7 +20,7 @@ include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/doc.cmake)
 
 SET(GCC_MINIMUM 4.7)
 
-FUNCTION(cmh_static_library)
+FUNCTION(cmh_header_only)
 
 	MESSAGE(STATUS "setup static library: ${PROJECT_NAME}")
 
@@ -78,20 +79,10 @@ FUNCTION(cmh_static_library)
 
 	#set(CMAKE_CPP_CREATE_STATIC_LIBRARY on)
 
-	add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
 	#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CPP)
 
 
-	# install library
-	install(
-		TARGETS ${PROJECT_NAME}
-		DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
-		EXPORT ${PROJECT_NAME}Targets
-		RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" COMPONENT bin
-		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT shlib
-		PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" COMPONENT dev
-		)
 
 	FOREACH(e ${include_extensions} hpp hh h glsl)
 		install_glob_source("include" ${e})
@@ -100,7 +91,7 @@ FUNCTION(cmh_static_library)
 		install_glob_binary("include" ${e})
 	ENDFOREACH()
 
-	cmh_package()
+	cmh_header_only_package()
 
 
 ENDFUNCTION()
