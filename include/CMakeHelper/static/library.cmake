@@ -25,11 +25,11 @@ FUNCTION(cmh_static_library)
 
 
 	# Initialize CXXFLAGS.
-	set(CMAKE_CXX_FLAGS                "-Wall -std=c++0x" PARENT_SCOPE)
-	set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g" PARENT_SCOPE)
-	set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG" PARENT_SCOPE)
-	set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG" PARENT_SCOPE)
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" PARENT_SCOPE)
+	#set(CMAKE_CXX_FLAGS                "-Wall -std=c++0x" PARENT_SCOPE)
+	#set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g" PARENT_SCOPE)
+	#set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG" PARENT_SCOPE)
+	#set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG" PARENT_SCOPE)
+	#set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" PARENT_SCOPE)
 
 	# Compiler-specific C++11 activation.
 	if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
@@ -48,10 +48,8 @@ FUNCTION(cmh_static_library)
 
 	INCLUDE(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/functions.cmake)
 
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5" PARENT_SCOPE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5")
-
-	set(CMAKE_INSTALL_PREFIX $ENV{HOME}/usr PARENT_SCOPE)
-
 
 	include_directories("${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
 	

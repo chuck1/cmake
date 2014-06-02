@@ -5,16 +5,16 @@
 #     ${CMAKE_INSTALL_PREFIX}/${folder}
 
 FUNCTION(cmh_file_glob_source varname)
-
+	
 	SET(${varname} PARENT_SCOPE)
 	
 	SET(exts "c" "cc" "cpp" "cxx")
 	FOREACH(e ${exts})
-		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_SOURCE_DIR}/*.${e})
+		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_SOURCE_DIR}/src/*.${e})
 		SET(files ${files} ${files_abs_tmp})
 		#MESSAGE(STATUS "found in ${PROJECT_SOURCE_DIR}: ${files_abs_tmp}")
 		
-		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_BINARY_DIR}/*.${e})
+		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_BINARY_DIR}/src/*.${e})
 		SET(files ${files} ${files_abs_tmp})
 		#MESSAGE(STATUS "found in ${PROJECT_BINARY_DIR}: ${files_abs_tmp}")
 	ENDFOREACH()
@@ -97,16 +97,25 @@ ENDFUNCTION()
 
 
 FUNCTION(link_exe)
-	MESSAGE(STATUS "link ${PROJECT_NAME} to ${libs}")
-
+	MESSAGE(STATUS "configure executable: ${PROJECT_NAME}")
+	#MESSAGE(STATUS "source_dir: ${PROJECT_SOURCE_DIR}")
+	#MESSAGE(STATUS "binary_dir: ${PROJECT_BINARY_DIR}")
+	#MESSAGE(STATUS "link to ${libs}")
+	
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5" PARENT_SCOPE)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5")
+	
 	SET(source_files)
 	cmh_file_glob_source(source_files)
 
 	MESSAGE("source files: ${source_files}")
 
 	ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
+
 	TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${libs})
 ENDFUNCTION()
+
+
 
 
 
