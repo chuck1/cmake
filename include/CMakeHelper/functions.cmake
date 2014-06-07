@@ -10,12 +10,19 @@ FUNCTION(cmh_file_glob_source varname)
 	
 	SET(exts "c" "cc" "cpp" "cxx")
 	FOREACH(e ${exts})
-		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_SOURCE_DIR}/src/*.${e})
-		SET(files ${files} ${files_abs_tmp})
+		FILE(GLOB_RECURSE files_abs ${PROJECT_SOURCE_DIR}/src/*.${e})
+		FOREACH(f ${files_abs})
+			FILE(RELATIVE_PATH f_rel ${PROJECT_SOURCE_DIR} ${f})
+			SET(files ${files} ${f_rel})
+		ENDFOREACH()
+		
 		#MESSAGE(STATUS "found in ${PROJECT_SOURCE_DIR}: ${files_abs_tmp}")
 		
-		FILE(GLOB_RECURSE files_abs_tmp ${PROJECT_BINARY_DIR}/src/*.${e})
-		SET(files ${files} ${files_abs_tmp})
+		FILE(GLOB_RECURSE files_abs ${PROJECT_BINARY_DIR}/src/*.${e})
+		FOREACH(f ${files_abs})
+			FILE(RELATIVE_PATH f_rel ${PROJECT_SOURCE_DIR} ${f})
+			SET(files ${files} ${f_rel})
+		ENDFOREACH()
 		#MESSAGE(STATUS "found in ${PROJECT_BINARY_DIR}: ${files_abs_tmp}")
 	ENDFOREACH()
 	
@@ -101,14 +108,14 @@ FUNCTION(link_exe)
 	#MESSAGE(STATUS "source_dir: ${PROJECT_SOURCE_DIR}")
 	#MESSAGE(STATUS "binary_dir: ${PROJECT_BINARY_DIR}")
 	#MESSAGE(STATUS "link to ${libs}")
-	
+
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5" PARENT_SCOPE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5")
 	
 	SET(source_files)
 	cmh_file_glob_source(source_files)
 
-	MESSAGE("source files: ${source_files}")
+	MESSAGE(STATUS "source files: ${source_files}")
 
 	ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 
@@ -116,6 +123,34 @@ FUNCTION(link_exe)
 ENDFUNCTION()
 
 
+
+FUNCTION(cmh_vars_from_file filename)
+	FILE(STRINGS ${filename} vars)
+
+	FOREACH(v ${vars})
+		STRING(FIND ${v} "=" p)
+		MATH(EXPR s "${p} + 1")
+		STRING(SUBSTRING ${v} 0 ${p} left)
+		STRING(SUBSTRING ${v} ${s} -1 right)
+
+		SET(${left} ${right} PARENT_SCOPE)
+
+		MESSAGE(STATUS "'${left}' '${right}'")
+	ENDFOREACH()
+ENDFUNCTION()
+
+FUNCTION(cmh_process_debug parent var)
+	IF(NOT DEFINED ${var})
+		SET(${var} 0)
+	ELSE()
+		MATH(EXPR ${var} "${${parent}} & ${${var}}")
+	ENDIF()
+	IF(${${var}})
+		MESSAGE(STATUS "-D${var}")
+		ADD_DEFINITIONS("-D${var}=${${var}}")
+	ENDIF()
+	SET(${var} ${${var}} PARENT_SCOPE)
+ENDFUNCTION()
 
 
 

@@ -1,7 +1,8 @@
 # Common methods for building static c++ libraries
-
+INCLUDE(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/functions.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/doc.cmake)
+include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/color.cmake)
 
 #MESSAGE("CMAKE_BINARY_DIR      ${CMAKE_BINARY_DIR}")
 #MESSAGE("CMAKE_FILES_DIRECTORY ${CMAKE_FILES_DIRECTORY}")
@@ -19,6 +20,7 @@ include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/doc.cmake)
 
 SET(GCC_MINIMUM 4.7)
 
+
 FUNCTION(cmh_static_library)
 
 	MESSAGE(STATUS "setup static library: ${PROJECT_NAME}")
@@ -28,7 +30,6 @@ FUNCTION(cmh_static_library)
 	#set(CMAKE_CXX_FLAGS                "-Wall -std=c++0x" PARENT_SCOPE)
 	#set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g" PARENT_SCOPE)
 	#set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG" PARENT_SCOPE)
-	#set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG" PARENT_SCOPE)
 	#set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" PARENT_SCOPE)
 
 	# Compiler-specific C++11 activation.
@@ -46,10 +47,24 @@ FUNCTION(cmh_static_library)
 
 
 
-	INCLUDE(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/functions.cmake)
 
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5" PARENT_SCOPE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5")
+	set(CMAKE_CXX_FLAGS		"-std=c++0x -rdynamic -pthread -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5" PARENT_SCOPE)
+	set(CMAKE_CXX_FLAGS_DEBUG	"-O0 -g -pg -D_DEBUG -Wall -Werror" PARENT_SCOPE)
+	set(CMAKE_CXX_FLAGS_RELEASE	"-O4 -DNDEBUG" PARENT_SCOPE)
+	
+	# debuging levels
+	FILE(RELATIVE_PATH project_binary_dir_relative ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
+
+	SET(CMAKE_BUILD_TYPE ${project_binary_dir_relative})
+	SET(CMAKE_BUILD_TYPE ${project_binary_dir_relative} PARENT_SCOPE)
+
+	STRING(COMPARE EQUAL ${CMAKE_BUILD_TYPE} "Debug" DEBUG)
+	SET(DEBUG ${DEBUG} PARENT_SCOPE)
+
+	# messages
+	MESSAGE(STATUS "bin dir: ${project_binary_dir_relative}")
+	MESSAGE(STATUS "debug flags: ${CMAKE_CXX_FLAGS_DEBUG}")
+	MESSAGE(STATUS "${Magenta}build type: ${CMAKE_BUILD_TYPE}${ColourReset}")
 
 	include_directories("${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
 	
@@ -71,8 +86,6 @@ FUNCTION(cmh_static_library)
 		#MESSAGE("${s} ${PROJECT_SOURCE_DIR} ${r}")	
 	endforeach()
 	#MESSAGE("${SOURCES}")
-
-
 
 	#set(CMAKE_CPP_CREATE_STATIC_LIBRARY on)
 
@@ -98,7 +111,7 @@ FUNCTION(cmh_static_library)
 		install_glob_binary("include" ${e})
 	ENDFOREACH()
 
-	cmh_package()
+	cmh_package_static_library()
 
 
 ENDFUNCTION()

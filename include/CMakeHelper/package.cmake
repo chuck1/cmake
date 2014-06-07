@@ -1,9 +1,45 @@
 # Packaging
 # =========
 
-# Add all targets to the build-tree export set
+# function to configure and install Config.cmake and ConfigVersion.cmake for all project types
+FUNCTION(cmh_package_common config_file configversion_file)
+	
+	
+	# Config.cmake for build tree
+	set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
+	set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
+	configure_file(
+		${config_file}
+		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+		@ONLY)
 
-FUNCTION(cmh_package)
+
+	# Config.cmake for install tree
+	set(CONF_INCLUDE_DIR "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
+	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
+	configure_file(
+		${config_file}
+		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
+		@ONLY)
+
+
+	# ConfigVersion.cmake
+	configure_file(
+		${configversion_file}
+		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+		@ONLY)
+
+
+	# Install config files
+	install(FILES
+		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
+		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+		DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/${PROJECT_NAME}" COMPONENT dev)
+
+ENDFUNCTION()
+
+
+FUNCTION(cmh_package_static_library)
 
 	MESSAGE(STATUS "generate package: ${PROJECT_NAME}")
 
@@ -14,57 +50,13 @@ FUNCTION(cmh_package)
 	# (this registers the build-tree with a global CMake-registry)
 	export(PACKAGE ${PROJECT_NAME})
 
+	# files to configure
+	set(config_file		${CMakeHelper_INCLUDE_DIR}/CMakeHelper/static/libraryConfig.cmake.in)
+	set(configversion_file	${CMakeHelper_INCLUDE_DIR}/CMakeHelper/static/libraryConfigVersion.cmake.in)
 
-	# ProjectConfig.cmake
-	# ===================
-	set(CONFIG_FILE ${CMakeHelper_INCLUDE_DIR}/CMakeHelper/static/libraryConfig.cmake.in)
-
-
-	# difference between build tree and install tree below is the include directory paths
-	# listed in the config file. Don't know why this is needed; seems like just the install
-	# tree is needed; perhaps it is for sub_directories that call find_package when this package isnt yet installed... (a diagram might be nice...)
-
-	# ... for the build tree
-	set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
-	configure_file(
-		${CONFIG_FILE}
-		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-		@ONLY)
-
-	# ... for the install tree
-	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
-	configure_file(
-		${CONFIG_FILE}
-		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
-		@ONLY)
-
-
-	# projectConfigVersion.cmake
-	# ==========================
-
-	#set(CMAKE_CONFIGVERSION_FILE ${PROJECT_NAME}ConfigVersion.cmake.in)
-	set(CMAKE_CONFIGVERSION_FILE ${CMakeHelper_INCLUDE_DIR}/CMakeHelper/static/libraryConfigVersion.cmake.in)
-
-	# Create ConfigVersion.cmake file
-	configure_file(
-		${CMAKE_CONFIGVERSION_FILE}
-		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-		@ONLY)
-
-
-	# Install
-	# =======
-
-	# Install the foobarConfig.cmake and foobarConfigVersion.cmake
-	install(FILES
-		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
-		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-		DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/${PROJECT_NAME}" COMPONENT dev)
-
+	cmh_package_common(${config_file} ${configversion_file})
 
 	# Install the export set for use with the install-tree
-	#MESSAGE("${INSTALL_CMAKE_DIR}")
-
 	install(
 		EXPORT ${PROJECT_NAME}Targets
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/${PROJECT_NAME}" COMPONENT dev)

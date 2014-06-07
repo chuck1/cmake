@@ -1511,44 +1511,11 @@ SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references
 #---------------------------------------------------------------------------
-
-# The TAGFILES option can be used to specify one or more tagfiles.
-# Optionally an initial location of the external documentation
-# can be added for each tagfile. The format of a tag file without
-# this location is as follows:
-#
-# TAGFILES = file1 file2 ...
-# Adding location for the tag files is done as follows:
-#
-# TAGFILES = file1=loc1 "file2 = loc2" ...
-# where "loc1" and "loc2" can be relative or absolute paths or
-# URLs. If a location is present for each tag, the installdox tool
-# does not have to be run to correct the links.
-# Note that each tag file must have a unique name
-# (where the name does NOT include the path)
-# If a tag file is not located in the directory in which doxygen
-# is run, you must also specify the path to the tagfile here.
-
 TAGFILES               = @DOX_TAGFILES@
 GENERATE_TAGFILE       = @PROJECT_NAME@.tag
-
-# If the ALLEXTERNALS tag is set to YES all external classes will be listed
-# in the class index. If set to NO only the inherited external classes
-# will be listed.
-
 ALLEXTERNALS           = NO
-
-# If the EXTERNAL_GROUPS tag is set to YES all external groups will be listed
-# in the modules index. If set to NO, only the current project's groups will
-# be listed.
-
 EXTERNAL_GROUPS        = YES
-
-# The PERL_PATH should be the absolute path and name of the perl script
-# interpreter (i.e. the result of `which perl').
-
 PERL_PATH              = /usr/bin/perl
-
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool
 #---------------------------------------------------------------------------
