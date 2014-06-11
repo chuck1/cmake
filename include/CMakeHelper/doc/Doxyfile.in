@@ -340,35 +340,10 @@ LOOKUP_CACHE_SIZE      = 0
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
-
-# If the EXTRACT_ALL tag is set to YES doxygen will assume all entities in
-# documentation are documented, even if no documentation was available.
-# Private class members and static file members will be hidden unless
-# the EXTRACT_PRIVATE and EXTRACT_STATIC tags are set to YES
-
-EXTRACT_ALL            = NO
-
-# If the EXTRACT_PRIVATE tag is set to YES all private members of a class
-# will be included in the documentation.
-
+EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = YES
-
-# If the EXTRACT_STATIC tag is set to YES all static members of a file
-# will be included in the documentation.
-
 EXTRACT_STATIC         = YES
-
-# If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs)
-# defined locally in source files will be included in the documentation.
-# If set to NO only classes defined in header files are included.
-
 EXTRACT_LOCAL_CLASSES  = YES
-
-# This flag is only useful for Objective-C code. When set to YES local
-# methods, which are defined in the implementation section but not in
-# the interface are included in the documentation.
-# If set to NO (the default) only methods in the interface are included.
-
 EXTRACT_LOCAL_METHODS  = NO
 
 # If this flag is set to YES, the members of anonymous namespaces will be
@@ -1519,22 +1494,7 @@ PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool
 #---------------------------------------------------------------------------
-
-# If the CLASS_DIAGRAMS tag is set to YES (the default) Doxygen will
-# generate a inheritance diagram (in HTML, RTF and LaTeX) for classes with base
-# or super classes. Setting the tag to NO turns the diagrams off. Note that
-# this option also works with HAVE_DOT disabled, but it is recommended to
-# install and use dot, since it yields more powerful graphs.
-
 CLASS_DIAGRAMS         = YES
-
-# You can define message sequence charts within doxygen comments using the \msc
-# command. Doxygen will then run the mscgen tool (see
-# http://www.mcternan.me.uk/mscgen/) to produce the chart and insert it in the
-# documentation. The MSCGEN_PATH tag allows you to specify the directory where
-# the mscgen tool resides. If left empty the tool is assumed to be found in the
-# default search path.
-
 MSCGEN_PATH            =
 
 # If set to YES, the inheritance and collaboration graphs will hide
