@@ -1,4 +1,4 @@
-INCLUDE(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package.cmake)
+INCLUDE(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/library/package.cmake)
 
 FUNCTION(cmh_header_only_package)
 

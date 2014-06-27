@@ -1,6 +1,5 @@
 # Common methods for building static c++ libraries
 
-include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/doc.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/header_only/package.cmake)
 

@@ -8,6 +8,8 @@ FUNCTION(cmh_package_common config_file configversion_file)
 	# Config.cmake for build tree
 	set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 	set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
+	set(conf_targets_file "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
 	configure_file(
 		${config_file}
 		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
@@ -17,7 +19,9 @@ FUNCTION(cmh_package_common config_file configversion_file)
 	# Config.cmake for install tree
 	set(CONF_INCLUDE_DIR "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
 	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
-	configure_file(
+	set(conf_targets_file "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")
+
+		configure_file(
 		${config_file}
 		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
 		@ONLY)
@@ -43,7 +47,7 @@ FUNCTION(cmh_package_static_library)
 
 	MESSAGE(STATUS "generate package: ${PROJECT_NAME}")
 
-	#export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+	export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 	export(TARGETS ${PROJECT_NAME} FILE "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")
 
 	# Export the package for use from the build-tree
@@ -51,8 +55,8 @@ FUNCTION(cmh_package_static_library)
 	export(PACKAGE ${PROJECT_NAME})
 
 	# files to configure
-	set(config_file		${CMakeHelper_INCLUDE_DIR}/CMakeHelper/static/libraryConfig.cmake.in)
-	set(configversion_file	${CMakeHelper_INCLUDE_DIR}/CMakeHelper/static/libraryConfigVersion.cmake.in)
+	set(config_file		${CMakeHelper_INCLUDE_DIR}/CMakeHelper/library/Config.cmake.in)
+	set(configversion_file	${CMakeHelper_INCLUDE_DIR}/CMakeHelper/library/ConfigVersion.cmake.in)
 
 	cmh_package_common(${config_file} ${configversion_file})
 
