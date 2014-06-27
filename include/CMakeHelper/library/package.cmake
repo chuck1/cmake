@@ -21,7 +21,7 @@ FUNCTION(cmh_package_common config_file configversion_file)
 	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
 	set(conf_targets_file "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")
 
-		configure_file(
+	configure_file(
 		${config_file}
 		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
 		@ONLY)
@@ -46,6 +46,7 @@ ENDFUNCTION()
 FUNCTION(cmh_package_static_library)
 
 	MESSAGE(STATUS "generate package: ${PROJECT_NAME}")
+	MESSAGE(STATUS "install prefix:   ${CMAKE_INSTALL_PREFIX}")
 
 	export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 	export(TARGETS ${PROJECT_NAME} FILE "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")

@@ -23,6 +23,8 @@ SET(GCC_MINIMUM 4.7)
 
 FUNCTION(cmh_library)
 
+	MESSAGE(STATUS "project:        ${PROJECT_NAME}")
+	MESSAGE(STATUS "install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 
 	# Initialize CXXFLAGS.
