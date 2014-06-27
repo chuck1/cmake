@@ -1,6 +1,6 @@
 # Common methods for building static c++ libraries
 INCLUDE(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/functions.cmake)
-include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package.cmake)
+include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/library/package.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/doc.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/color.cmake)
 
@@ -21,9 +21,8 @@ include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/color.cmake)
 SET(GCC_MINIMUM 4.7)
 
 
-FUNCTION(cmh_static_library)
+FUNCTION(cmh_library)
 
-	MESSAGE(STATUS "setup static library: ${PROJECT_NAME}")
 
 
 	# Initialize CXXFLAGS.
@@ -89,8 +88,15 @@ FUNCTION(cmh_static_library)
 
 	#set(CMAKE_CPP_CREATE_STATIC_LIBRARY on)
 
-	add_library(${PROJECT_NAME} STATIC ${SOURCES})
+	if(${${PROJECT_NAME}_STATIC})
+		MESSAGE(STATUS "static library: ${PROJECT_NAME}")
+		add_library(${PROJECT_NAME} STATIC ${SOURCES})
+	endif()
 
+	if(${${PROJECT_NAME}_SHARED})
+		MESSAGE(STATUS "shared library: ${PROJECT_NAME}")
+		add_library(${PROJECT_NAME}_shared SHARED ${SOURCES})
+	endif()
 	#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CPP)
 
 

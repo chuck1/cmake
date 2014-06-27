@@ -15,6 +15,11 @@ if(DOXYGEN_FOUND)
 		set(HAVE_DOT NO)
 	endif()
 
+	# condition tagfiles list
+	STRING(REPLACE ";" " " DOX_TAGFILES1 "${DOX_TAGFILES}")
+
+	SET(DOX_TAGFILES ${DOX_TAGFILES1})
+
 	configure_file(
 		"${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/Doxyfile.in"
 		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
