@@ -65,9 +65,9 @@ FUNCTION(cmh_library)
 	
 
 	# messages
-	MESSAGE(STATUS "bin dir: ${project_binary_dir_relative}")
-	MESSAGE(STATUS "debug flags: ${CMAKE_CXX_FLAGS_DEBUG}")
-	MESSAGE(STATUS "${Magenta}build type: ${CMAKE_BUILD_TYPE}${ColourReset}")
+	MESSAGE(STATUS           "bin dir:     ${project_binary_dir_relative}")
+	MESSAGE(STATUS           "debug flags: ${CMAKE_CXX_FLAGS_DEBUG}")
+	MESSAGE(STATUS "${Magenta}build type:  ${CMAKE_BUILD_TYPE}${ColourReset}")
 
 	include_directories("${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
 	

@@ -115,7 +115,7 @@ FUNCTION(link_exe)
 	SET(source_files)
 	cmh_file_glob_source(source_files)
 
-	MESSAGE(STATUS "source files: ${source_files}")
+	#MESSAGE(STATUS "source files: ${source_files}")
 
 	ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 
