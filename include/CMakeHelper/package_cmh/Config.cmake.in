@@ -19,5 +19,6 @@ set(@PROJECT_NAME@_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
 INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/functions.cmake)
 INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/library/func.cmake)
 INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/header_only/library.cmake)
+INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/finder.cmake)
 
 

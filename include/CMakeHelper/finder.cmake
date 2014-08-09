@@ -15,25 +15,37 @@ FUNCTION(cmh_finder PKG_NAME PKG_COMPONENTS)
 	#FOREACH(c ${PKG_COMPONENT})
 	FOREACH(c ${${PKG_NAME}_FIND_COMPONENTS})
 	
+		MESSAGE(STATUS "c ${c}")
+
 	        #LIST(FIND ${PKG_NAME}_FIND_COMPONENTS "${c}" idx_${c})
-	        LIST(FIND PKG_COMPONENT "${c}" idx_${c})
+		LIST(FIND PKG_COMPONENTS "${c}" idx_${c})
 	
 	        STRING(COMPARE EQUAL ${idx_${c}} "-1" not_${c})
 	
 	        IF(NOT ${not_${c}})
-	                MESSAGE(STATUS "    ${c}")
-	                FIND_PACKAGE(${PKG_NAME_LOWER}_${c}${shared_postfix})
+
+
+			FIND_PACKAGE(${PKG_NAME_LOWER}_${c}${shared_postfix} REQUIRED)
 	
+			MESSAGE(STATUS "    ${c}")
+	                MESSAGE(STATUS "    libs: ${${PKG_NAME_LOWER}_${c}_LIBRARIES}")
+
+			SET(
+	                        ${PKG_NAME}_LIBRARIES
+	                        ${${PKG_NAME}_LIBRARIES}
+				${${PKG_NAME_LOWER}_${c}_LIBRARIES})
 	                SET(
 	                        ${PKG_NAME}_LIBRARIES
 	                        ${${PKG_NAME}_LIBRARIES}
-	                        ${${PKG_NAME_LOWER}_${c}_LIBRARIES})
-	
+				${${PKG_NAME_LOWER}_${c}_LIBRARIES} PARENT_SCOPE)
+		ELSE()
+			MESSAGE(FATAL_ERROR "${c} not found")
+			#MESSAGE(FATAL_ERROR "
 	        ENDIF()
 	
-	        #MESSAGE(STATUS "${pkg_name}_LIBRARIES ${${pkg_name}_LIBRARIES}")       
+	        MESSAGE(STATUS "${PKG_NAME}_LIBRARIES ${${PKG_NAME}_LIBRARIES}")       
 	
 	ENDFOREACH()
 
-ENDFOREACH()
+ENDFUNCTION()
 

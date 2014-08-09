@@ -107,7 +107,7 @@ FUNCTION(link_exe)
 	MESSAGE(STATUS "configure executable: ${PROJECT_NAME}")
 	#MESSAGE(STATUS "source_dir: ${PROJECT_SOURCE_DIR}")
 	#MESSAGE(STATUS "binary_dir: ${PROJECT_BINARY_DIR}")
-	#MESSAGE(STATUS "link to ${libs}")
+	MESSAGE(STATUS "link to ${libs}")
 
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5" PARENT_SCOPE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++0x -Werror -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -rdynamic -pthread -fmax-errors=5")
