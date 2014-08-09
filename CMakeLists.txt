@@ -1,6 +1,10 @@
 cmake_minimum_required (VERSION 2.6)
 
-INCLUDE($ENV{HOME}/.config.cmake)
+IF(UNIX)
+	INCLUDE($ENV{HOME}/.config.cmake)
+ELSEIF(WIN32)
+	INCLUDE($ENV{HOMEPATH}\\.config.cmake)
+ENDIF()
 
 PROJECT(CMakeHelper)
 SET(PACKAGE_VERSION 0.0.1)

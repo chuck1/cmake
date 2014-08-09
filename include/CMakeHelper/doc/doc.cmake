@@ -38,7 +38,7 @@ if(DOXYGEN_FOUND)
 	# inform object projects that include this project via FIND_PACKAGE of the location of the .tag file
 	SET(DOX_TAGFILE ${WORKDIR}/${PROJECT_NAME}.tag PARENT_SCOPE)
 
-	add_custom_target(doc
+	add_custom_target(${PROJECT_NAME}_doc
 		${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
 		WORKING_DIRECTORY ${WORKDIR}
 		COMMENT "Generating API documentation with Doxygen" VERBATIM)

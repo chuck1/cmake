@@ -6,9 +6,12 @@ FUNCTION(cmh_package_common config_file configversion_file)
 	
 	
 	# Config.cmake for build tree
-	set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
-	set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
-	set(conf_targets_file "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+	set(CONF_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/include")
+	set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include" ${include_dirs})
+	set(CONF_TARGETS_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+	SET(CONF_LIBRARY_DIR  "${PROJECT_BINARY_DIR}")
+
+	set(${PROJECT_NAME}_LIBRARY_DIR ${PROJECT_BINARY_DIR})
 
 	configure_file(
 		${config_file}
@@ -17,10 +20,11 @@ FUNCTION(cmh_package_common config_file configversion_file)
 
 
 	# Config.cmake for install tree
-	set(CONF_INCLUDE_DIR "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
-	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
-	set(conf_targets_file "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")
-
+	set(CONF_INCLUDE_DIR  "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
+	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include" ${include_dirs})
+	set(CONF_TARGETS_FILE "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")
+	SET(CONF_LIBRARY_DIR  "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/lib")
+	
 	configure_file(
 		${config_file}
 		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"

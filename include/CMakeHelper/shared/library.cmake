@@ -86,7 +86,7 @@ FUNCTION(cmh_shared_library)
 		#MESSAGE("${s} ${PROJECT_SOURCE_DIR} ${r}")	
 	endforeach()
 	
-	MESSAGE(STATUS "libs: ${libs}")
+	#MESSAGE(STATUS "libs: ${libs}")
 
 	#set(CMAKE_CPP_CREATE_STATIC_LIBRARY on)
 

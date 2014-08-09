@@ -20,10 +20,20 @@ include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/color.cmake)
 
 SET(GCC_MINIMUM 4.7)
 
+FUNCTION(cmh_build_type)
 
+	FILE(RELATIVE_PATH project_binary_dir_relative ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
+
+	SET(CMAKE_BUILD_TYPE ${project_binary_dir_relative} PARENT_SCOPE)
+
+	STRING(COMPARE EQUAL ${CMAKE_BUILD_TYPE} "Debug" DEBUG)
+
+	SET(DEBUG ${DEBUG} PARENT_SCOPE)
+
+ENDFUNCTION()
 FUNCTION(cmh_library)
 
-	MESSAGE(STATUS "project:        ${PROJECT_NAME}")
+	MESSAGE(STATUS "${Blue}${ColourBold}Project:        ${PROJECT_NAME}${ColourReset}")
 	MESSAGE(STATUS "install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 	
@@ -55,19 +65,11 @@ FUNCTION(cmh_library)
 	set(CMAKE_CXX_FLAGS_DEBUG	"-O0 -g -pg -D_DEBUG -Wall -Werror -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5" PARENT_SCOPE)
 	set(CMAKE_CXX_FLAGS_RELEASE	"-O4 -DNDEBUG" PARENT_SCOPE)
 	
-	# debuging levels
-	FILE(RELATIVE_PATH project_binary_dir_relative ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
-
-	SET(CMAKE_BUILD_TYPE ${project_binary_dir_relative})
-	SET(CMAKE_BUILD_TYPE ${project_binary_dir_relative} PARENT_SCOPE)
-
-	STRING(COMPARE EQUAL ${CMAKE_BUILD_TYPE} "Debug" DEBUG)
-	SET(DEBUG ${DEBUG} PARENT_SCOPE)
 
 	# messages
-	MESSAGE(STATUS "bin dir: ${project_binary_dir_relative}")
-	MESSAGE(STATUS "debug flags: ${CMAKE_CXX_FLAGS_DEBUG}")
-	MESSAGE(STATUS "${Magenta}build type: ${CMAKE_BUILD_TYPE}${ColourReset}")
+	MESSAGE(STATUS           "bin dir:     ${project_binary_dir_relative}")
+	MESSAGE(STATUS           "debug flags: ${CMAKE_CXX_FLAGS_DEBUG}")
+	MESSAGE(STATUS "${Magenta}build type:  ${CMAKE_BUILD_TYPE}${ColourReset}")
 
 	include_directories("${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
 	
