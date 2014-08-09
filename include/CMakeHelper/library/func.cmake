@@ -26,6 +26,8 @@ FUNCTION(cmh_library)
 	MESSAGE(STATUS "project:        ${PROJECT_NAME}")
 	MESSAGE(STATUS "install prefix: ${CMAKE_INSTALL_PREFIX}")
 
+	
+
 
 	# Initialize CXXFLAGS.
 	#set(CMAKE_CXX_FLAGS                "-Wall -std=c++0x" PARENT_SCOPE)
@@ -89,16 +91,26 @@ FUNCTION(cmh_library)
 	#MESSAGE("${SOURCES}")
 
 	#set(CMAKE_CPP_CREATE_STATIC_LIBRARY on)
+	
+	if(NOT ${${PROJECT_NAME}_STATIC})
+		if(NOT ${${PROJECT_NAME}_SHARED})
+			MESSAGE(FATAL_ERROR "Must set at least one of ${PROJECT_NAME}_STATIC or ${PROJECT_NAME}_SHARED to ON")
+		endif()
+	endif()
+
 
 	if(${${PROJECT_NAME}_STATIC})
 		MESSAGE(STATUS "static library: ${PROJECT_NAME}")
 		add_library(${PROJECT_NAME} STATIC ${SOURCES})
 	endif()
-
+	
 	if(${${PROJECT_NAME}_SHARED})
 		MESSAGE(STATUS "shared library: ${PROJECT_NAME}")
 		add_library(${PROJECT_NAME}_shared SHARED ${SOURCES})
 	endif()
+
+	
+
 	#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CPP)
 
 
