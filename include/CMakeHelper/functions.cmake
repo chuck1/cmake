@@ -118,8 +118,10 @@ FUNCTION(link_exe)
 	#MESSAGE(STATUS "source files: ${source_files}")
 
 	ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
+	
+	SET(libs_tmp ${libs} ${libs} ${libs})
 
-	TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${libs})
+	TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${libs_tmp})
 ENDFUNCTION()
 
 

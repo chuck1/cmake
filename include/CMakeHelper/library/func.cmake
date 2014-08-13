@@ -22,21 +22,28 @@ SET(GCC_MINIMUM 4.7)
 
 FUNCTION(cmh_build_type)
 
-	FILE(RELATIVE_PATH project_binary_dir_relative ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
+	FILE(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
+	
+	STRING(REGEX REPLACE "\\.\\./" "" r ${r})
+	
+	STRING(REGEX MATCH "^[A-Za-z0-9]+" r ${r})
 
-	SET(CMAKE_BUILD_TYPE ${project_binary_dir_relative} PARENT_SCOPE)
+	SET(CMAKE_BUILD_TYPE ${r} PARENT_SCOPE)
+	
+	#STRING(COMPARE EQUAL ${CMAKE_BUILD_TYPE} "Debug" DEBUG)
 
-	STRING(COMPARE EQUAL ${CMAKE_BUILD_TYPE} "Debug" DEBUG)
-
-	SET(DEBUG ${DEBUG} PARENT_SCOPE)
+	#SET(DEBUG ${DEBUG} PARENT_SCOPE)
 
 ENDFUNCTION()
 FUNCTION(cmh_library)
 
 	MESSAGE(STATUS "${Blue}${ColourBold}Project:        ${PROJECT_NAME}${ColourReset}")
-	MESSAGE(STATUS "install prefix: ${CMAKE_INSTALL_PREFIX}")
+	MESSAGE(STATUS                     "install prefix: ${CMAKE_INSTALL_PREFIX}")
+	MESSAGE(STATUS                     "source dir:     ${PROJECT_SOURCE_DIR}")
+	MESSAGE(STATUS                     "binary dir:     ${PROJECT_BINARY_DIR}")
+	MESSAGE(STATUS                     "binary dir:     ${CMAKE_CURRENT_LIST_DIR}")
 
-	
+	cmh_build_type()
 
 
 	# Initialize CXXFLAGS.
@@ -57,10 +64,10 @@ FUNCTION(cmh_library)
 	else ()
 		message(FATAL_ERROR "Your C++ compiler does not support C++11.")
 	endif ()
-
-
-
-
+	
+	
+	
+	
 	set(CMAKE_CXX_FLAGS		"-std=c++0x -rdynamic -pthread -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5" PARENT_SCOPE)
 	set(CMAKE_CXX_FLAGS_DEBUG	"-O0 -g -pg -D_DEBUG -Wall -Werror -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5" PARENT_SCOPE)
 	set(CMAKE_CXX_FLAGS_RELEASE	"-O4 -DNDEBUG" PARENT_SCOPE)
@@ -135,7 +142,13 @@ FUNCTION(cmh_library)
 
 	cmh_package_static_library()
 
+	# add this library to libs so that subsequent call to line_exe() links to this library
+	LIST(APPEND libs_tmp ${PROJECT_NAME} ${libs})
+	LIST(REMOVE_DUPLICATES libs_tmp)
 
+	#MESSAGE(STATUS "libs_tmp ${libs_tmp}")
+	
+	SET(libs ${libs_tmp} PARENT_SCOPE)
 ENDFUNCTION()
 
 

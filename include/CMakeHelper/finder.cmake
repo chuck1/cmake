@@ -2,6 +2,8 @@
 
 FUNCTION(cmh_finder PKG_NAME PKG_COMPONENTS)
 	
+	SET(libs_tmp ${libs})
+
 	STRING(TOLOWER ${PKG_NAME} PKG_NAME_LOWER)
 	
 	
@@ -28,16 +30,11 @@ FUNCTION(cmh_finder PKG_NAME PKG_COMPONENTS)
 			FIND_PACKAGE(${PKG_NAME_LOWER}_${c}${shared_postfix} REQUIRED)
 	
 			MESSAGE(STATUS "    ${c}")
-	                MESSAGE(STATUS "    libs: ${${PKG_NAME_LOWER}_${c}_LIBRARIES}")
+			#MESSAGE(STATUS "    libs: ${${PKG_NAME_LOWER}_${c}_LIBRARIES}")
+			
+			LIST(APPEND ${PKG_NAME}_LIBRARIES ${${PKG_NAME_LOWER}_${c}_LIBRARIES})
+			LIST(REMOVE_DUPLICATES ${PKG_NAME}_LIBRARIES)
 
-			SET(
-	                        ${PKG_NAME}_LIBRARIES
-	                        ${${PKG_NAME}_LIBRARIES}
-				${${PKG_NAME_LOWER}_${c}_LIBRARIES})
-	                SET(
-	                        ${PKG_NAME}_LIBRARIES
-	                        ${${PKG_NAME}_LIBRARIES}
-				${${PKG_NAME_LOWER}_${c}_LIBRARIES} PARENT_SCOPE)
 		ELSE()
 			MESSAGE(FATAL_ERROR "${c} not found")
 			#MESSAGE(FATAL_ERROR "
@@ -46,6 +43,15 @@ FUNCTION(cmh_finder PKG_NAME PKG_COMPONENTS)
 	        MESSAGE(STATUS "${PKG_NAME}_LIBRARIES ${${PKG_NAME}_LIBRARIES}")       
 	
 	ENDFOREACH()
+	
+	#MESSAGE(STATUS "${PKG_NAME}_LIBRARIES ${${PKG_NAME}_LIBRARIES}")       
+	#MESSAGE(STATUS "libs ${libs}")       
+	
+	LIST(APPEND libs_tmp ${${PKG_NAME}_LIBRARIES})
+	LIST(REMOVE_DUPLICATES libs_tmp)
+	
+	SET(libs ${libs_tmp} PARENT_SCOPE)
+        SET(${PKG_NAME}_LIBRARIES ${${PKG_NAME}_LIBRARIES} PARENT_SCOPE)
 
 ENDFUNCTION()
 
