@@ -4,6 +4,26 @@
 # and install them in
 #     ${CMAKE_INSTALL_PREFIX}/${folder}
 
+FUNCTION(cmh_boost_shared)
+	unset(Boost_INCLUDE_DIR CACHE)
+	unset(Boost_LIBRARY_DIRS CACHE)
+	unset(Boost_LIBRARIES CACHE)
+	set(Boost_LIBRARIES PARENT_SCOPE)
+	
+
+	set(Boost_USE_STATIC_LIBS OFF PARENT_SCOPE)
+	set(Boost_USE_STATIC_RUNTIME OFF PARENT_SCOPE)
+	add_definitions(-DBOOST_ALL_DYN_LINK)
+ENDFUNCTION()
+FUNCTION(cmh_boost_static)
+	unset(Boost_INCLUDE_DIR CACHE)
+	unset(Boost_LIBRARY_DIRS CACHE)
+	unset(Boost_LIBRARIES CACHE)
+	set(Boost_LIBRARIES PARENT_SCOPE)
+
+	set(Boost_USE_STATIC_LIBS ON PARENT_SCOPE)
+	set(Boost_USE_STATIC_RUNTIME ON PARENT_SCOPE)
+ENDFUNCTION()
 FUNCTION(cmh_file_glob_source varname)
 	
 	SET(${varname} PARENT_SCOPE)
@@ -124,6 +144,22 @@ FUNCTION(link_exe)
 	TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${libs_tmp})
 ENDFUNCTION()
 
+FUNCTION(cmh_build_type)
+
+	FILE(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
+	
+	STRING(REGEX REPLACE "\\.\\./" "" r ${r})
+	
+	STRING(REGEX MATCH "^[A-Za-z0-9]+" r ${r})
+
+	SET(CMAKE_BUILD_TYPE ${r} PARENT_SCOPE)
+	
+	#STRING(COMPARE EQUAL ${CMAKE_BUILD_TYPE} "Debug" DEBUG)
+
+	#SET(DEBUG ${DEBUG} PARENT_SCOPE)
+
+ENDFUNCTION()
+
 
 
 FUNCTION(cmh_vars_from_file filename)
@@ -152,6 +188,49 @@ FUNCTION(cmh_process_debug parent var)
 		ADD_DEFINITIONS("-D${var}=${${var}}")
 	ENDIF()
 	SET(${var} ${${var}} PARENT_SCOPE)
+ENDFUNCTION()
+FUNCTION(cmh_package_common config_file configversion_file)
+	
+	
+	# Config.cmake for build tree
+	set(CONF_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/include")
+	set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include" ${include_dirs})
+	set(CONF_TARGETS_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+	SET(CONF_LIBRARY_DIR  "${PROJECT_BINARY_DIR}")
+
+	set(${PROJECT_NAME}_LIBRARY_DIR ${PROJECT_BINARY_DIR})
+
+	configure_file(
+		${config_file}
+		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+		@ONLY)
+
+
+	# Config.cmake for install tree
+	set(CONF_INCLUDE_DIR  "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
+	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include" ${include_dirs})
+	set(CONF_TARGETS_FILE "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")
+	SET(CONF_LIBRARY_DIR  "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/lib")
+	
+	configure_file(
+		${config_file}
+		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
+		@ONLY)
+
+
+	# ConfigVersion.cmake
+	configure_file(
+		${configversion_file}
+		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+		@ONLY)
+
+
+	# Install config files
+	install(FILES
+		"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
+		"${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+		DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/${PROJECT_NAME}" COMPONENT dev)
+
 ENDFUNCTION()
 
 

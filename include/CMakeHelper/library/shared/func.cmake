@@ -1,6 +1,6 @@
 # Common methods for building static c++ libraries
 INCLUDE(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/functions.cmake)
-include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/library/package.cmake)
+include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/library/shared/package.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/doc/doc.cmake)
 include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/color.cmake)
 
@@ -20,22 +20,7 @@ include(${CMakeHelper_INCLUDE_DIR}/CMakeHelper/color.cmake)
 
 SET(GCC_MINIMUM 4.7)
 
-FUNCTION(cmh_build_type)
-
-	FILE(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
-	
-	STRING(REGEX REPLACE "\\.\\./" "" r ${r})
-	
-	STRING(REGEX MATCH "^[A-Za-z0-9]+" r ${r})
-
-	SET(CMAKE_BUILD_TYPE ${r} PARENT_SCOPE)
-	
-	#STRING(COMPARE EQUAL ${CMAKE_BUILD_TYPE} "Debug" DEBUG)
-
-	#SET(DEBUG ${DEBUG} PARENT_SCOPE)
-
-ENDFUNCTION()
-FUNCTION(cmh_library)
+FUNCTION(cmh_shared_library)
 
 	MESSAGE(STATUS "${Blue}${ColourBold}Project:        ${PROJECT_NAME}${ColourReset}")
 	MESSAGE(STATUS                     "install prefix: ${CMAKE_INSTALL_PREFIX}")
@@ -94,35 +79,17 @@ FUNCTION(cmh_library)
 	foreach(s ${SOURCES_ABS})
 		file(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${s})
 		set(SOURCES ${SOURCES} ${r})
-
-		#MESSAGE("${s} ${PROJECT_SOURCE_DIR} ${r}")	
 	endforeach()
-	#MESSAGE("${SOURCES}")
 
-	#set(CMAKE_CPP_CREATE_STATIC_LIBRARY on)
-	
-	if(NOT ${${PROJECT_NAME}_STATIC})
-		if(NOT ${${PROJECT_NAME}_SHARED})
-			MESSAGE(FATAL_ERROR "Must set at least one of ${PROJECT_NAME}_STATIC or ${PROJECT_NAME}_SHARED to ON")
-		endif()
-	endif()
-
-
-	if(${${PROJECT_NAME}_STATIC})
-		MESSAGE(STATUS "static library: ${PROJECT_NAME}")
-		add_library(${PROJECT_NAME} STATIC ${SOURCES})
-	endif()
-	
-	if(${${PROJECT_NAME}_SHARED})
-		MESSAGE(STATUS "shared library: ${PROJECT_NAME}")
-		add_library(${PROJECT_NAME}_shared SHARED ${SOURCES})
-	endif()
 
 	
+	MESSAGE(STATUS "shared library: ${PROJECT_NAME}")
+	MESSAGE(STATUS "libs:           ${libs}")
 
-	#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CPP)
+	add_library(${PROJECT_NAME} SHARED ${SOURCES})
+	target_link_libraries(${PROJECT_NAME} ${libs})
 
-
+	
 	# install library
 	install(
 		TARGETS ${PROJECT_NAME}
@@ -132,7 +99,7 @@ FUNCTION(cmh_library)
 		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT shlib
 		PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" COMPONENT dev
 		)
-
+	
 	FOREACH(e ${include_extensions} hpp hh h glsl)
 		install_glob_source("include" ${e})
 	ENDFOREACH()
@@ -140,8 +107,9 @@ FUNCTION(cmh_library)
 		install_glob_binary("include" ${e})
 	ENDFOREACH()
 
-	cmh_package_static_library()
+	cmh_package_shared_library()
 
+	
 	# add this library to libs so that subsequent call to line_exe() links to this library
 	LIST(APPEND libs_tmp ${PROJECT_NAME} ${libs})
 	LIST(REMOVE_DUPLICATES libs_tmp)

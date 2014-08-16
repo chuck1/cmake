@@ -1,23 +1,23 @@
 
 
 FUNCTION(cmh_finder PKG_NAME PKG_COMPONENTS)
-	
-	SET(libs_tmp ${libs})
 
+	# clear variables
+	SET(${PKG_NAME}_LIBRARIES)
+
+	# preliminaries
 	STRING(TOLOWER ${PKG_NAME} PKG_NAME_LOWER)
 	
-	
-	IF(${PKG_NAME_LOWER}_SHARED)
-	        SET(SHARED_POSTFIX "_shared")
+	IF(${PKG_NAME}_SHARED)
+	        SET(shared_postfix "_shared")
 	ENDIF()
 	
 	MESSAGE(STATUS "Find ${PKG_NAME}")
 	
-	
 	#FOREACH(c ${PKG_COMPONENT})
 	FOREACH(c ${${PKG_NAME}_FIND_COMPONENTS})
 	
-		MESSAGE(STATUS "c ${c}")
+		#MESSAGE(STATUS "c ${c}")
 
 	        #LIST(FIND ${PKG_NAME}_FIND_COMPONENTS "${c}" idx_${c})
 		LIST(FIND PKG_COMPONENTS "${c}" idx_${c})
@@ -25,14 +25,14 @@ FUNCTION(cmh_finder PKG_NAME PKG_COMPONENTS)
 	        STRING(COMPARE EQUAL ${idx_${c}} "-1" not_${c})
 	
 	        IF(NOT ${not_${c}})
-
-
-			FIND_PACKAGE(${PKG_NAME_LOWER}_${c}${shared_postfix} REQUIRED)
-	
-			MESSAGE(STATUS "    ${c}")
-			#MESSAGE(STATUS "    libs: ${${PKG_NAME_LOWER}_${c}_LIBRARIES}")
+			SET(comp ${PKG_NAME_LOWER}_${c}${shared_postfix})
 			
-			LIST(APPEND ${PKG_NAME}_LIBRARIES ${${PKG_NAME_LOWER}_${c}_LIBRARIES})
+			FIND_PACKAGE(${comp} REQUIRED)
+	
+			MESSAGE(STATUS "    ${comp}")
+			MESSAGE(STATUS "    ${comp}_LIBRARIES: ${${comp}_LIBRARIES}")
+			
+			LIST(APPEND ${PKG_NAME}_LIBRARIES ${${comp}_LIBRARIES})
 			LIST(REMOVE_DUPLICATES ${PKG_NAME}_LIBRARIES)
 
 		ELSE()
@@ -47,10 +47,7 @@ FUNCTION(cmh_finder PKG_NAME PKG_COMPONENTS)
 	#MESSAGE(STATUS "${PKG_NAME}_LIBRARIES ${${PKG_NAME}_LIBRARIES}")       
 	#MESSAGE(STATUS "libs ${libs}")       
 	
-	LIST(APPEND libs_tmp ${${PKG_NAME}_LIBRARIES})
-	LIST(REMOVE_DUPLICATES libs_tmp)
-	
-	SET(libs ${libs_tmp} PARENT_SCOPE)
+	# set in parent scope
         SET(${PKG_NAME}_LIBRARIES ${${PKG_NAME}_LIBRARIES} PARENT_SCOPE)
 
 ENDFUNCTION()
