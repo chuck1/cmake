@@ -107,7 +107,6 @@ FUNCTION(cmh_shared_library)
 		install_glob_binary("include" ${e})
 	ENDFOREACH()
 
-	cmh_package_shared_library()
 
 	
 	# add this library to libs so that subsequent call to line_exe() links to this library
@@ -117,6 +116,15 @@ FUNCTION(cmh_shared_library)
 	#MESSAGE(STATUS "libs_tmp ${libs_tmp}")
 	
 	SET(libs ${libs_tmp} PARENT_SCOPE)
+
+	get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+	foreach(dir ${dirs})
+		message(STATUS "dir='${dir}'")
+	endforeach()
+	SET(${PROJECT_NAME}_INCLUDE_DIRS ${dirs})
+	
+	cmh_package_shared_library()
+
 ENDFUNCTION()
 
 

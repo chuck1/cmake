@@ -20,6 +20,10 @@ INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/functions.cmake)
 INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/library/static/func.cmake)
 INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/library/shared/func.cmake)
 INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/header_only/library.cmake)
-INCLUDE(${@PROJECT_NAME@_INCLUDE_DIR}/CMakeHelper/finder.cmake)
 
+FOREACH(d ${@PROJECT_NAME@_INCLUDE_DIRS})
+	LIST(APPEND CMAKE_MODULE_PATH ${d}/CMakeHelper)
+ENDFOREACH()
+
+MESSAGE(STATUS "CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}")
 

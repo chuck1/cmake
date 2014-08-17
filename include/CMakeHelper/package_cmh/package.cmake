@@ -21,16 +21,17 @@ set(CONFIG_FILE ${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package_cmh/Config.cmake.
 # tree is needed; perhaps it is for sub_directories that call find_package when this package isnt yet installed... (a diagram might be nice...)
 
 # ... for the build tree
-set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
-set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
+
+set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}")
+set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}" "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}")
 configure_file(
 	${CONFIG_FILE}
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 	@ONLY)
 
 # ... for the install tree
-set(CONF_INCLUDE_DIR "\${${PROJECT_NAME}_INSTALL_PREFIX}/include")
-set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME}_INSTALL_PREFIX}/include")
+set(CONF_INCLUDE_DIR "\${${PROJECT_NAME}_INSTALL_PREFIX}/include/${PROJECT_NAME}")
+set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME}_INSTALL_PREFIX}/include/${PROJECT_NAME}")
 configure_file(
 	${CONFIG_FILE}
 	"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"

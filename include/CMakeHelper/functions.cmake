@@ -4,26 +4,6 @@
 # and install them in
 #     ${CMAKE_INSTALL_PREFIX}/${folder}
 
-FUNCTION(cmh_boost_shared)
-	unset(Boost_INCLUDE_DIR CACHE)
-	unset(Boost_LIBRARY_DIRS CACHE)
-	unset(Boost_LIBRARIES CACHE)
-	set(Boost_LIBRARIES PARENT_SCOPE)
-	
-
-	set(Boost_USE_STATIC_LIBS OFF PARENT_SCOPE)
-	set(Boost_USE_STATIC_RUNTIME OFF PARENT_SCOPE)
-	add_definitions(-DBOOST_ALL_DYN_LINK)
-ENDFUNCTION()
-FUNCTION(cmh_boost_static)
-	unset(Boost_INCLUDE_DIR CACHE)
-	unset(Boost_LIBRARY_DIRS CACHE)
-	unset(Boost_LIBRARIES CACHE)
-	set(Boost_LIBRARIES PARENT_SCOPE)
-
-	set(Boost_USE_STATIC_LIBS ON PARENT_SCOPE)
-	set(Boost_USE_STATIC_RUNTIME ON PARENT_SCOPE)
-ENDFUNCTION()
 FUNCTION(cmh_file_glob_source varname)
 	
 	SET(${varname} PARENT_SCOPE)
@@ -55,7 +35,7 @@ FUNCTION(install_glob_source folder extension)
 	FOREACH(f ${files_abs})
 		FILE(RELATIVE_PATH r ${PROJECT_SOURCE_DIR}/${folder} ${f})
 		GET_FILENAME_COMPONENT(d ${r} PATH)
-		INSTALL(FILES ${PROJECT_SOURCE_DIR}/${folder}/${r} DESTINATION include/${d})
+		INSTALL(FILES ${PROJECT_SOURCE_DIR}/${folder}/${r} DESTINATION include/${PROJECT_NAME}/${d})
 	ENDFOREACH()
 ENDFUNCTION()
 
@@ -194,7 +174,7 @@ FUNCTION(cmh_package_common config_file configversion_file)
 	
 	# Config.cmake for build tree
 	set(CONF_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/include")
-	set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include" ${include_dirs})
+	set(CONF_INCLUDE_DIRS "${${PROJECT_NAME}_INCLUDE_DIRS}")
 	set(CONF_TARGETS_FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 	SET(CONF_LIBRARY_DIR  "${PROJECT_BINARY_DIR}")
 
@@ -207,10 +187,10 @@ FUNCTION(cmh_package_common config_file configversion_file)
 
 
 	# Config.cmake for install tree
-	set(CONF_INCLUDE_DIR  "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include")
-	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/include" ${include_dirs})
-	set(CONF_TARGETS_FILE "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")
-	SET(CONF_LIBRARY_DIR  "\${${PROJECT_NAME_UPPER}_INSTALL_PREFIX}/lib")
+	set(CONF_INCLUDE_DIR  "\${${PROJECT_NAME}_INSTALL_PREFIX}/include/${PROJECT_NAME}")
+	set(CONF_INCLUDE_DIRS "\${${PROJECT_NAME}_INSTALL_PREFIX}/include/${PROJECT_NAME}" ${${PROJECT_NAME}_INCLUDE_DIRS})
+	set(CONF_TARGETS_FILE "\${${PROJECT_NAME}_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")
+	SET(CONF_LIBRARY_DIR  "\${${PROJECT_NAME}_INSTALL_PREFIX}/lib")
 	
 	configure_file(
 		${config_file}

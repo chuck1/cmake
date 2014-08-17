@@ -22,20 +22,8 @@ SET(GCC_MINIMUM 4.7)
 
 FUNCTION(cmh_static_library)
 
-	MESSAGE(STATUS "${Blue}${ColourBold}Project:        ${PROJECT_NAME}${ColourReset}")
-	MESSAGE(STATUS                     "install prefix: ${CMAKE_INSTALL_PREFIX}")
-	MESSAGE(STATUS                     "source dir:     ${PROJECT_SOURCE_DIR}")
-	MESSAGE(STATUS                     "binary dir:     ${PROJECT_BINARY_DIR}")
-	MESSAGE(STATUS                     "binary dir:     ${CMAKE_CURRENT_LIST_DIR}")
-
 	cmh_build_type()
 	SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} PARENT_SCOPE)
-
-	# Initialize CXXFLAGS.
-	#set(CMAKE_CXX_FLAGS                "-Wall -std=c++0x" PARENT_SCOPE)
-	#set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g" PARENT_SCOPE)
-	#set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG" PARENT_SCOPE)
-	#set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g" PARENT_SCOPE)
 
 	# Compiler-specific C++11 activation.
 	if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
@@ -50,21 +38,22 @@ FUNCTION(cmh_static_library)
 		message(FATAL_ERROR "Your C++ compiler does not support C++11.")
 	endif ()
 	
-	
-	
-	set(CMAKE_CXX_FLAGS		"-std=c++0x -rdynamic -pthread -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5")
-	set(CMAKE_CXX_FLAGS_DEBUG	"-O0 -g -pg -D_DEBUG -Wall -Werror -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5")
-	set(CMAKE_CXX_FLAGS_RELEASE	"-O4 -DNDEBUG")
-	
 	set(CMAKE_CXX_FLAGS		"-std=c++0x -rdynamic -pthread -Wall -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5" PARENT_SCOPE)
-	set(CMAKE_CXX_FLAGS_DEBUG	"-O0 -g -pg -D_DEBUG -Wall -Werror -Wno-unknown-pragmas -Wno-unused-local-typedefs -fmax-errors=5" PARENT_SCOPE)
+	set(CMAKE_CXX_FLAGS_DEBUG	"-O0 -g -pg -D_DEBUG -Wall -Werror" PARENT_SCOPE)
 	set(CMAKE_CXX_FLAGS_RELEASE	"-O4 -DNDEBUG" PARENT_SCOPE)
-	
 
 	# messages
-	MESSAGE(STATUS           "bin dir:     ${project_binary_dir_relative}")
-	MESSAGE(STATUS           "debug flags: ${CMAKE_CXX_FLAGS_DEBUG}")
-	MESSAGE(STATUS "${Magenta}build type:  ${CMAKE_BUILD_TYPE}${ColourReset}")
+	MESSAGE(STATUS "${Blue}${ColourBold}Project:        ${PROJECT_NAME}${ColourReset}")
+	MESSAGE(STATUS                     "install prefix: ${CMAKE_INSTALL_PREFIX}")
+	#MESSAGE(STATUS                     "source dir:     ${PROJECT_SOURCE_DIR}")
+	#MESSAGE(STATUS                     "binary dir:     ${PROJECT_BINARY_DIR}")
+	#MESSAGE(STATUS                     "binary dir:     ${CMAKE_CURRENT_LIST_DIR}")
+	MESSAGE(STATUS                     "build type:     ${CMAKE_BUILD_TYPE}")
+	MESSAGE(STATUS                     "static library: ${PROJECT_NAME}")
+	MESSAGE(STATUS                     "libs:           ${libs}")
+
+
+
 
 	include_directories("${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
 	
@@ -82,23 +71,9 @@ FUNCTION(cmh_static_library)
 	foreach(s ${SOURCES_ABS})
 		file(RELATIVE_PATH r ${PROJECT_SOURCE_DIR} ${s})
 		set(SOURCES ${SOURCES} ${r})
-
-		#MESSAGE("${s} ${PROJECT_SOURCE_DIR} ${r}")	
 	endforeach()
-	#MESSAGE("${SOURCES}")
 
-	#set(CMAKE_CPP_CREATE_STATIC_LIBRARY on)
-	
-	if(NOT ${${PROJECT_NAME}_STATIC})
-		if(NOT ${${PROJECT_NAME}_SHARED})
-			MESSAGE(FATAL_ERROR "Must set at least one of ${PROJECT_NAME}_STATIC or ${PROJECT_NAME}_SHARED to ON")
-		endif()
-	endif()
-
-
-	MESSAGE(STATUS "static library: ${PROJECT_NAME}")
 	add_library(${PROJECT_NAME} STATIC ${SOURCES})
-	
 	
 
 	# install library
