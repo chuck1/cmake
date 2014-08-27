@@ -3,8 +3,8 @@
 
 FUNCTION(cmh_package_static_library)
 
-	MESSAGE(STATUS "generate package: ${PROJECT_NAME}")
-	MESSAGE(STATUS "install prefix:   ${CMAKE_INSTALL_PREFIX}")
+	#MESSAGE(STATUS "generate package: ${PROJECT_NAME}")
+	#MESSAGE(STATUS "install prefix:   ${CMAKE_INSTALL_PREFIX}")
 
 	export(TARGETS ${PROJECT_NAME} FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
 	export(TARGETS ${PROJECT_NAME} FILE "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}Targets.cmake")

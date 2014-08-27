@@ -2,25 +2,24 @@
 
 SET(PROJECT_NAME ${PROJECT_NAME})
 
-MESSAGE(STATUS "generate package: ${PROJECT_NAME}")
-MESSAGE(STATUS "install prefix:   ${CMAKE_INSTALL_PREFIX}")
+#MESSAGE(STATUS "generate package: ${PROJECT_NAME}")
+#MESSAGE(STATUS "install prefix:   ${CMAKE_INSTALL_PREFIX}")
 
 SET(targets ${PROJECT_NAME})
 FOREACH(l ${libs})
 	IF(TARGET ${l})
-		MESSAGE(STATUS "${l} is a target")
+		#MESSAGE(STATUS "${l} is a target")
 		GET_PROPERTY(imp TARGET ${l} PROPERTY IMPORTED)
 		IF(${imp})
-			MESSAGE(STATUS "${l} is an imported target")
+			#MESSAGE(STATUS "${l} is an imported target")
 		ELSE()
-			MESSAGE(STATUS "${l} is not an imported target")
+			#MESSAGE(STATUS "${l} is not an imported target")
 			LIST(APPEND targets ${l})
 		ENDIF()
 
 	ENDIF()
 ENDFOREACH()
 
-MESSAGE(STATUS "targets:          ${targets}")
 
 export(TARGETS ${targets}
 	FILE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
