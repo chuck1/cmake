@@ -22,8 +22,11 @@ set(CONFIG_FILE ${CMakeHelper_INCLUDE_DIR}/CMakeHelper/package_cmh/Config.cmake.
 
 # ... for the build tree
 
-set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}")
-set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}" "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}")
+#set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}")
+#set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}" "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}")
+set(CONF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
+set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include")
+
 configure_file(
 	${CONFIG_FILE}
 	"${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"

@@ -28,9 +28,10 @@ endforeach()
 #MESSAGE(STATUS "libs:           ${libs}")
 
 if(${SHARED})
-		add_library(${PROJECT_NAME} SHARED ${SOURCES})
-	target_link_libraries(${PROJECT_NAME} ${libs})
-elseif(${STATIC})
+	add_library(${PROJECT_NAME} SHARED ${SOURCES})
+	MESSAGE(STATUS "linking: ${shared_libs}")
+	target_link_libraries(${PROJECT_NAME} ${shared_libs})
+else()
 	add_library(${PROJECT_NAME} STATIC ${SOURCES})
 endif()
 
@@ -64,10 +65,14 @@ INCLUDE(cmh_library_package)
 
 
 # add this library to libs so that subsequent call to line_exe() links to this library
-LIST(APPEND libs ${PROJECT_NAME})
-LIST(REMOVE_DUPLICATES libs)
+LIST(APPEND shared_libs ${PROJECT_NAME}.so)
+LIST(REMOVE_DUPLICATES shared_libs)
 
+LIST(APPEND static_libs ${PROJECT_NAME}.a)
+LIST(REMOVE_DUPLICATES static_libs)
 
+MESSAGE(STATUS "shared_libs: ${shared_libs}")
+MESSAGE(STATUS "static_libs: ${static_libs}")
 
 
 

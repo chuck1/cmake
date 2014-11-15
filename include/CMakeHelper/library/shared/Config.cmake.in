@@ -31,7 +31,8 @@ if(NOT TARGET @PROJECT_NAME@ AND NOT @PROJECT_NAME@_BINARY_DIR)
 endif()
 
 # These are IMPORTED targets created by FooBarTargets.cmake
-set(@PROJECT_NAME@_LIBRARIES @PROJECT_NAME@ @libs@)
+set(@PROJECT_NAME@_SHARED_LIBRARIES @PROJECT_NAME@.so @shared_libs@)
+set(@PROJECT_NAME@_STATIC_LIBRARIES @PROJECT_NAME@.a  @static_libs@)
 
 # dox
 set(@PROJECT_NAME@_DOX_TAGFILE @DOX_TAGFILE@)
@@ -43,7 +44,10 @@ include_directories(${@PROJECT_NAME@_INCLUDE_DIRS})
 link_directories(${@PROJECT_NAME@_LIBRARY_DIR})
 
 # add libs to current project
-LIST(APPEND libs ${@PROJECT_NAME@_LIBRARIES})
-LIST(REMOVE_DUPLICATES libs)
+LIST(APPEND shared_libs ${@PROJECT_NAME@_SHARED_LIBRARIES})
+LIST(REMOVE_DUPLICATES shared_libs)
+
+LIST(APPEND static_libs ${@PROJECT_NAME@_STATIC_LIBRARIES})
+LIST(REMOVE_DUPLICATES static_libs)
 
 
